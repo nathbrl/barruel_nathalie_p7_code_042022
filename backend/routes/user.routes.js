@@ -6,6 +6,5 @@ const limiter = require('../middlewares/limiter');
 const checkPassword = require('../middlewares/password-validator');
 
 router.post('/signup',checkPassword, checkEmail, userCrtl.signup);
-router.post('/login', limiter, userCrtl.login);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require("express");
-const { Pool } = require("pg");
+const pg = require("pg");
+//require("dotenv").config();
 
 //const path = require('path');
 
@@ -9,19 +10,34 @@ const userRoutes = require('./routes/user.routes');
 const app = express();
 
 //connexion BDD
-const pool = new Pool({
+const config = {
     user: 'postgres',
     host: 'localhost',
     database: 'groupomania',
     password: 'Postgresmdp',
     port: 5432,
-})
+    max: 10,
+}
+
+const pool = new pg.Pool(config);
+
 pool.query('SELECT * FROM public."user"', (err, res) => {
     res.rows.forEach(user => {
         console.log(user.pseudo)
     }) 
     pool.end() 
 })
+
+async function connect() {
+    try {
+        await pool.on('connect', () => {
+            console.log('Successfully connected to the database groupomania');
+        })
+    } catch (error) {
+        console.error("Unable to connect to the database groupomania", error);
+    }
+}
+connect();
 
 //Paramétrage des headers
 app.use((req, res, next) => {

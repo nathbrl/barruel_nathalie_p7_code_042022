@@ -17,14 +17,14 @@ exports.signup = (req, res, next) => {
                     pseudo: req.body.pseudo,
                     email: req.body.email,
                     password: hash,
-                    is_admin: req.body.is_admin,
+                    is_admin: false,
                     profile_picture: req.body.profile_picture,
                     created_at: req.body.created_at,
                     updated_at: req.body.updated_at                
                 })
                 user.save()
                     .then( () => res.status(201).json({ message: 'Utilisateur créé' }))
-                    .catch(error => res.status(400).json({ error}))
+                    .catch(error => res.status(400).json({ error }))
             })
     }
     catch(error) {
