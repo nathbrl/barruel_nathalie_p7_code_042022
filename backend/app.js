@@ -23,14 +23,14 @@ const pool = new pg.Pool(config);
 
 pool.query('SELECT * FROM public."user"', (err, res) => {
     res.rows.forEach(user => {
-        console.log(user.pseudo)
+        //console.log(user.pseudo)
     }) 
     pool.end() 
 })
 
 async function connect() {
     try {
-        await pool.on('connect', () => {
+            pool.on('connect', () => {
             console.log('Successfully connected to the database groupomania');
         })
     } catch (error) {
@@ -52,7 +52,6 @@ app.use(express.json());
 //app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
-/*app.use('', postRoutes);*/
-app.use('/api/auth', userRoutes);
+app.use('/api/user', userRoutes);
 
 module.exports = app;

@@ -28,9 +28,9 @@ CREATE TABLE public.comment (
     comment_id uuid NOT NULL,
     content character(300) NOT NULL,
     created_at date NOT NULL,
+    updated_at date,
     post_id uuid NOT NULL,
-    user_id uuid NOT NULL,
-    updated_at date
+    user_id uuid NOT NULL
 );
 
 
@@ -42,9 +42,9 @@ ALTER TABLE public.comment OWNER TO postgres;
 
 CREATE TABLE public."like" (
     like_id uuid NOT NULL,
-    post_id uuid,
+    post_id uuid NOT NULL,
     user_id uuid NOT NULL,
-    comment_id uuid
+    comment_id uuid NOT NULL
 );
 
 
@@ -57,10 +57,10 @@ ALTER TABLE public."like" OWNER TO postgres;
 CREATE TABLE public.post (
     post_id uuid NOT NULL,
     content character(300) NOT NULL,
-    atachment character(300) NOT NULL,
+    atachment character(300),
     created_at date NOT NULL,
-    user_id uuid NOT NULL,
-    updated_at date
+    updated_at date,
+    user_id uuid NOT NULL
 );
 
 
@@ -125,18 +125,11 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- Name: user users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."user"
-    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
-
-
---
--- Name: fki_comment; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX fki_comment ON public."user" USING btree (user_id);
+    ADD CONSTRAINT user_pkey PRIMARY KEY (user_id);
 
 
 --
@@ -147,31 +140,17 @@ CREATE INDEX fki_comment_id ON public."like" USING btree (comment_id);
 
 
 --
--- Name: fki_like; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX fki_like ON public."user" USING btree (user_id);
-
-
---
 -- Name: fki_post_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX fki_post_id ON public.comment USING btree (post_id);
-
-
---
--- Name: fki_user; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX fki_user ON public.comment USING btree (comment_id);
+CREATE INDEX fki_post_id ON public."like" USING btree (post_id);
 
 
 --
 -- Name: fki_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX fki_user_id ON public.comment USING btree (user_id);
+CREATE INDEX fki_user_id ON public.post USING btree (user_id);
 
 
 --
@@ -179,15 +158,7 @@ CREATE INDEX fki_user_id ON public.comment USING btree (user_id);
 --
 
 ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT comment_id FOREIGN KEY (comment_id) REFERENCES public.comment(comment_id) NOT VALID;
-
-
---
--- Name: comment post_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id) NOT VALID;
+    ADD CONSTRAINT comment_id FOREIGN KEY (comment_id) REFERENCES public.comment(comment_id);
 
 
 --
@@ -195,23 +166,15 @@ ALTER TABLE ONLY public.comment
 --
 
 ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id) NOT VALID;
+    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id);
 
 
 --
--- Name: comment user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: comment post_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) NOT VALID;
-
-
---
--- Name: like user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) NOT VALID;
+    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id);
 
 
 --
@@ -219,7 +182,23 @@ ALTER TABLE ONLY public."like"
 --
 
 ALTER TABLE ONLY public.post
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) NOT VALID;
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id);
+
+
+--
+-- Name: like user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."like"
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id);
+
+
+--
+-- Name: comment user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id);
 
 
 --

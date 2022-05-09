@@ -1,31 +1,50 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Pool = require('../config/db');
+const { v4: uuidv4 } = require('uuid');
 //require('dotenv').config();
+const queries = require('../queries');
+const pool = require('../config/db');
 
-const User = require('../models/user');
+
+const createUser = async (user, res) => {
+    console.log(user);
+    //Check if email already exists
+    const checkEmail = await pool.query(queries.checkExistingEmail);
+    if (checkEmail.rowCount) {
+        await pool.query(queries.createUser, [user.user_id, user.pseudo, user.email, user.password, user.is_admin, user.profile_picture, user.created_at, user.updated_at]);
+        res.status(201).send('user was successfully created');
+    } else {
+        res.status(400).send('user wasn\'t created');
+    }
+};
+
+const getUsers = async (req, res) => {
+    const users = await Pool.query(queries.getUsers);
+    res.status(200).json(users.rows);
+}
+
+module.exports.getUsers = getUsers;
 
 //Inscription de l'utilisateur
-exports.signup = (req, res, next) => {
+exports.signup = async (req, res) => {
+    console.log(req);
     try {
         if (req.body.password === undefined) {
             throw 'Mot de passe non défini';
         }
-        bcrypt.hash(req.body.password, 10)
-            .then(hash => { 
-                const user = new User({
-                    user_id: req.body.user_id,
-                    pseudo: req.body.pseudo,
-                    email: req.body.email,
-                    password: hash,
-                    is_admin: false,
-                    profile_picture: req.body.profile_picture,
-                    created_at: req.body.created_at,
-                    updated_at: req.body.updated_at                
-                })
-                user.save()
-                    .then( () => res.status(201).json({ message: 'Utilisateur créé' }))
-                    .catch(error => res.status(400).json({ error }))
-            })
+        const passwordHashed = await bcrypt.hash(req.body.password, 10)
+        let today = new Date();
+        createUser ({
+            user_id: uuidv4(),
+            pseudo: req.body.pseudo,
+            email: req.body.email,
+            password: passwordHashed,
+            is_admin: false,
+            profile_picture: req.body.profile_picture,
+            created_at: new Date(),
+            updated_at: null,          
+        }, res);
     }
     catch(error) {
         res.status(400).json({ message: error });
@@ -48,7 +67,7 @@ exports.login = (req, res, next) => {
                         userId: user._id,
                         token: jwt.sign(
                             { userId: user._id },
-                            RANDOM_TOKEN_SECRET_KEY,
+                            process.env.RANDOM_TOKEN_SECRET_KEY,
                             { expiresIn: '24h' }
                         )
                     });

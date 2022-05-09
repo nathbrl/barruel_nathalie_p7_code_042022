@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
+    console.log(req.body);
     try {
         if (req.headers.authorization === undefined) {
             throw 'Les headers d\'autorisation sont absents';
