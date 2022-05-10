@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 module.exports = (req, res, next) => {
     console.log(req.body);
@@ -7,7 +8,7 @@ module.exports = (req, res, next) => {
             throw 'Les headers d\'autorisation sont absents';
         }
         const token = req.headers.authorization.split(' ')[1];
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET_KEY');
+        const decodedToken = jwt.verify(token, process.env.RANDOM_TOKEN_SECRET_KEY);
         const userId = decodedToken.userId;
         const isAdmin = decodedToken.isAdmin;
         if (isAdmin === false) {

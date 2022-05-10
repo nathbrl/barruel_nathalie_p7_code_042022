@@ -4,8 +4,14 @@ const createUser = 'INSERT INTO public."user" (user_id, pseudo, email, password,
 
 const checkExistingEmail = 'SELECT s FROM public."user" s WHERE s.email = $1';
 
+const deleteUser =  'DELETE FROM public."user" WHERE user_id = $1';
+
+const updateUser = 'UPDATE public."user" SET pseudo = $1, profile_picture = $2 WHERE user_id = $3 RETURNING *';
+
 module.exports = {
     getUsers,
     createUser,
     checkExistingEmail,
+    deleteUser,
+    updateUser,
 };
