@@ -1,3 +1,4 @@
+/* USER QUERIES */
 const getUsers = 'SELECT * FROM public."user"';
 
 const createUser = 'INSERT INTO public."user" (user_id, pseudo, email, password, is_admin, profile_picture, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
@@ -14,4 +15,24 @@ module.exports = {
     checkExistingEmail,
     deleteUser,
     updateUser,
+};
+
+/* POSTS QUERIES */
+
+const createPost = '';
+
+const updatePost = '';
+
+const deletePost = '';
+
+const getAllPosts = '';
+
+const postLikes = '';
+
+module.exports = {
+    createPost,
+    updatePost,
+    deletePost,
+    getAllPosts,
+    postLikes,
 };

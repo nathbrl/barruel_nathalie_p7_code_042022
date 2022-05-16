@@ -1,26 +1,21 @@
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-    console.log(req.body);
     try {
         if (req.headers.authorization === undefined) {
             throw 'Les headers d\'autorisation sont absents';
         }
-        const token = req.headers.authorization.split(' ')[1];
+        const token = req.headers["authorization"];
+        console.log(token);
         const decodedToken = jwt.verify(token, process.env.RANDOM_TOKEN_SECRET_KEY);
-        const userId = decodedToken.userId;
-        const isAdmin = decodedToken.isAdmin;
-        if (isAdmin === false) {
-            if(req.body.userId && req.body.userId !== userId) {
-                throw 'User ID non valide';
-            } else {
-                next();
-            }
+        const email = decodedToken.email;
+        req.auth = { email };
+        if(req.body.email && req.body.email !== email) {
+            throw 'User email is not valid';
         } else {
             next();
         }
-        
     } catch (error){
         res.status(401).json({ error: error || 'Requête non authentifiée'});
     }
