@@ -16,11 +16,11 @@ const pool = require('../config/db');
 /**
  * CREATE A USER
  */
-exports.createUser = async (user, res) => {
+async function createUser (user, res) {
     //Check if email already exists
     const checkEmail = await pool.query(queries.checkExistingEmail, [user.email] );
     if (checkEmail.rowCount === 0) {
-        await pool.query(queries.createUser, [user.user_id, user.pseudo, user.email, user.password, user.is_admin, user.profile_picture, user.created_at, user.updated_at]);
+        await pool.query(queries.createUserQuerie, [user.user_id, user.pseudo, user.email, user.password, user.is_admin, user.profile_picture, user.created_at, user.updated_at]);
         res.status(201).send('user was successfully created');
     } else {
         res.status(400).send('user already exists');
@@ -77,6 +77,7 @@ exports.signup = async (req, res) => {
         }, res);
     }
     catch(error) {
+        console.log('toto', error);
         res.status(400).json({ message: error });
     }
 }
@@ -84,8 +85,8 @@ exports.signup = async (req, res) => {
 /**
  * USER LOG IN
  */
-exports.login = (user, res, next) => {
-    bcrypt.compare(user.body.password, user.password)
+exports.login = (req, res) => {
+    bcrypt.compare(req.body.password, req.password)
         .then(valid => {
             if(!valid){
                 return res.status(401).json({ error: 'Mot de passe incorrect'});
@@ -99,5 +100,5 @@ exports.login = (user, res, next) => {
                 )
             });
         })
-        .catch(error => res.status(500).json({ error}))
+        .catch(error => res.status(500).json({ error })) // rajouter des consoles.log dans le catch pour debugger plus facilement
 };
