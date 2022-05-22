@@ -4,11 +4,13 @@ const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const queries = require('../queries');
 const pool = require('../config/db');
+const { json } = require('express');
 
 /**
- * GET ALL USERS
+ * GET ALL USERS 
  */
- exports.getUsers = async (req, res) => {
+// à supprimer
+exports.getUsers = async (req, res) => {
     const users = await pool.query(queries.getUsers);
     res.status(200).json(users.rows);
 }
@@ -77,28 +79,34 @@ exports.signup = async (req, res) => {
         }, res);
     }
     catch(error) {
-        console.log('toto', error);
         res.status(400).json({ message: error });
     }
 }
 
 /**
  * USER LOG IN
+ * 
  */
-exports.login = (req, res) => {
-    bcrypt.compare(req.body.password, req.password)
-        .then(valid => {
-            if(!valid){
-                return res.status(401).json({ error: 'Mot de passe incorrect'});
-            }
-            res.status(200).json({
-                userId: user.user_id,
-                token: jwt.sign(
-                    { userId: user.user_id },
-                    process.env.RANDOM_TOKEN_SECRET_KEY,
-                    { expiresIn: '24h' }
-                )
-            });
-        })
-        .catch(error => res.status(500).json({ error })) // rajouter des consoles.log dans le catch pour debugger plus facilement
+exports.login = async (req, res) => {
+    const checkEmail = await pool.query(queries.checkEmail, [req.body.email]);
+        if (!checkEmail) {
+            return res.status(401).json({ error: "Email was not found" })
+        } else {
+            bcrypt.compare(req.body.password, checkEmail.password)
+            .then(valid => {
+                if (!valid) {
+                    return res.status(401).json({ error: 'Password is incorrect'});
+                }
+                console.log("User successfully logged in !");
+                res.status(200).json({
+                    userEmail: checkEmail.email,
+                    token: jwt.sign(
+                        { userId: checkEmail.email },
+                        process.env.RANDOM_TOKEN_SECRET_KEY,
+                        { expiresIn: '24h' }
+                    )
+                })
+            })
+            .catch(error => res.status(500).json({ message: "Authentication error" }));
+        }    
 };
