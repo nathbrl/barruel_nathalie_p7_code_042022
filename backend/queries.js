@@ -5,7 +5,7 @@ const createUserQuerie = 'INSERT INTO public."user" (user_id, pseudo, email, pas
 
 const checkExistingEmail = 'SELECT s FROM public."user" s WHERE s.email = $1';
 
-const checkEmail = 'SELECT * FROM public."user" s WHERE s.email = $1'
+const checkUser = 'SELECT * FROM public."user" WHERE email = $1';
 
 const deleteUser =  'DELETE FROM public."user" WHERE user_id = $1';
 
@@ -17,7 +17,7 @@ module.exports = {
     checkExistingEmail,
     deleteUser,
     updateUser,
-    checkEmail,
+    checkUser,
 };
 
 /* POSTS QUERIES 

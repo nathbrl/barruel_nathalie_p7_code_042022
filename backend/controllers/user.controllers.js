@@ -7,9 +7,8 @@ const pool = require('../config/db');
 const { json } = require('express');
 
 /**
- * GET ALL USERS 
- */
-// à supprimer
+ * GET ALL USERS // à supprimer
+*/
 exports.getUsers = async (req, res) => {
     const users = await pool.query(queries.getUsers);
     res.status(200).json(users.rows);
@@ -17,7 +16,7 @@ exports.getUsers = async (req, res) => {
 
 /**
  * CREATE A USER
- */
+*/
 async function createUser (user, res) {
     //Check if email already exists
     const checkEmail = await pool.query(queries.checkExistingEmail, [user.email] );
@@ -31,7 +30,7 @@ async function createUser (user, res) {
 
 /**
  * UPDATE A USER
- */
+*/
 exports.updateUser = async (user, res) => {
     const id = user.params.id
     await pool.query(queries.updateUser, [user.body.pseudo, user.body.profile_picture, id], (error, results) => {
@@ -46,7 +45,7 @@ exports.updateUser = async (user, res) => {
 
 /**
  * DELETE A USER
- */
+*/
 
 exports.deleteUser = async (user, res) => {
     const id = user.params.id;
@@ -60,13 +59,14 @@ exports.deleteUser = async (user, res) => {
 
 /**
  * USER SIGN UP
- */
+*/
 exports.signup = async (req, res) => {
     try {
         if (req.body.password === undefined) {
             throw 'Mot de passe non défini';
         }
         const passwordHashed = await bcrypt.hash(req.body.password, 10)
+        console.log(passwordHashed);
         createUser ({
             user_id: uuidv4(),
             pseudo: req.body.pseudo,
@@ -86,27 +86,35 @@ exports.signup = async (req, res) => {
 /**
  * USER LOG IN
  * 
- */
+*/
 exports.login = async (req, res) => {
-    const checkEmail = await pool.query(queries.checkEmail, [req.body.email]);
-        if (!checkEmail) {
-            return res.status(401).json({ error: "Email was not found" })
+    await pool.query(queries.checkUser, [req.body.email], (err, result) => {
+        const user = result.rows[0];
+        console.log(req.body.password);
+        console.log(user.password);
+        if (!user.email) {
+            //console.log(!user.email);
+            return res.status(401).json({ error: "This email doesn't exists, signup up first" });
         } else {
-            bcrypt.compare(req.body.password, checkEmail.password)
-            .then(valid => {
-                if (!valid) {
-                    return res.status(401).json({ error: 'Password is incorrect'});
-                }
-                console.log("User successfully logged in !");
-                res.status(200).json({
-                    userEmail: checkEmail.email,
-                    token: jwt.sign(
-                        { userId: checkEmail.email },
-                        process.env.RANDOM_TOKEN_SECRET_KEY,
-                        { expiresIn: '24h' }
-                    )
+            bcrypt.compare(req.body.password, user.password.trim())
+                .then(valid => {
+                    console.log(valid);
+                    if (!valid) {
+                        return res.status(401).json({ error: 'Password is incorrect'});
+                    }
+                    console.log("User successfully logged in !");
+                    res.status(200).json({
+                        userPseudo: user.pseudo,
+                        email: user.email,
+                        password: undefined,
+                        token: jwt.sign(
+                            { userId: user.user_id },
+                            process.env.RANDOM_TOKEN_SECRET_KEY,
+                            { expiresIn: '24h' }
+                        )
+                    });
                 })
-            })
-            .catch(error => res.status(500).json({ message: "Authentication error" }));
-        }    
-};
+                .catch(error => res.status(500).json({ message: "Authentication error" }));
+        }
+    });
+}

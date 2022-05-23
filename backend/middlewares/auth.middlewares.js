@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
         const token = req.headers["authorization"];
         const decodedToken = jwt.verify(token, process.env.RANDOM_TOKEN_SECRET_KEY);
         if (!decodedToken) {
-            return res.status(403).json("unauthorized request")
+            return res.status(403).json("Unauthorized request")
         } else {
             next();
         }

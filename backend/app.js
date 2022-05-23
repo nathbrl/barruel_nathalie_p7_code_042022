@@ -26,7 +26,7 @@ pool.query('SELECT * FROM public."user"', (err, res) => {
         //console.log(user.pseudo)
     }) 
     pool.end() 
-})
+});
 
 async function connect() {
     try {
