@@ -10,7 +10,7 @@ const { json } = require('express');
  * GET ALL USERS // à supprimer
 */
 exports.getUsers = async (req, res) => {
-    const users = await pool.query(queries.getUsers);
+    const users = await pool.query(queries.getUsersQuery);
     res.status(200).json(users.rows);
 }
 
@@ -19,9 +19,9 @@ exports.getUsers = async (req, res) => {
 */
 async function createUser (user, res) {
     //Check if email already exists
-    const checkEmail = await pool.query(queries.checkExistingEmail, [user.email] );
+    const checkEmail = await pool.query(queries.checkExistingEmailQuery, [user.email] );
     if (checkEmail.rowCount === 0) {
-        await pool.query(queries.createUserQuerie, [user.user_id, user.pseudo, user.email, user.password, user.is_admin, user.profile_picture, user.created_at, user.updated_at]);
+        await pool.query(queries.createUserQuery, [user.user_id, user.pseudo, user.email, user.password, user.is_admin, user.profile_picture, user.created_at, user.updated_at]);
         res.status(201).send('user was successfully created');
     } else {
         res.status(400).send('user already exists');
@@ -33,7 +33,7 @@ async function createUser (user, res) {
 */
 exports.updateUser = async (user, res) => {
     const id = user.params.id
-    await pool.query(queries.updateUser, [user.body.pseudo, user.body.profile_picture, id], (error, results) => {
+    await pool.query(queries.updateUserQuery, [user.body.pseudo, user.body.profile_picture, id], (error, results) => {
         if (error) {
             res.status(400).send('User couldn\'t be updated');
         } else {
@@ -49,7 +49,7 @@ exports.updateUser = async (user, res) => {
 
 exports.deleteUser = async (user, res) => {
     const id = user.params.id;
-    await pool.query(queries.deleteUser, [id]);
+    await pool.query(queries.deleteUserQuery, [id]);
     if (!id) {
         res.status(400).send('User doesn\'t exist, deletion impossible');
     } else {
@@ -66,7 +66,6 @@ exports.signup = async (req, res) => {
             throw 'Mot de passe non défini';
         }
         const passwordHashed = await bcrypt.hash(req.body.password, 10)
-        console.log(passwordHashed);
         createUser ({
             user_id: uuidv4(),
             pseudo: req.body.pseudo,
@@ -88,21 +87,17 @@ exports.signup = async (req, res) => {
  * 
 */
 exports.login = async (req, res) => {
-    await pool.query(queries.checkUser, [req.body.email], (err, result) => {
+    await pool.query(queries.checkUserQuery, [req.body.email], (err, result) => {
         const user = result.rows[0];
-        console.log(req.body.password);
-        console.log(user.password);
         if (!user.email) {
             //console.log(!user.email);
             return res.status(401).json({ error: "This email doesn't exists, signup up first" });
         } else {
-            bcrypt.compare(req.body.password, user.password.trim())
+            bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
-                    console.log(valid);
                     if (!valid) {
                         return res.status(401).json({ error: 'Password is incorrect'});
                     }
-                    console.log("User successfully logged in !");
                     res.status(200).json({
                         userPseudo: user.pseudo,
                         email: user.email,
@@ -113,6 +108,7 @@ exports.login = async (req, res) => {
                             { expiresIn: '24h' }
                         )
                     });
+                   
                 })
                 .catch(error => res.status(500).json({ message: "Authentication error" }));
         }

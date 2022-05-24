@@ -26,7 +26,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.comment (
     comment_id uuid NOT NULL,
-    content character(300) NOT NULL,
+    content character varying(300) NOT NULL,
     created_at date NOT NULL,
     updated_at date,
     post_id uuid NOT NULL,
@@ -56,8 +56,8 @@ ALTER TABLE public."like" OWNER TO postgres;
 
 CREATE TABLE public.post (
     post_id uuid NOT NULL,
-    content character(300) NOT NULL,
-    atachment character(300),
+    content character varying(300) NOT NULL,
+    atachment character varying(300),
     created_at date NOT NULL,
     updated_at date,
     user_id uuid NOT NULL
@@ -72,11 +72,11 @@ ALTER TABLE public.post OWNER TO postgres;
 
 CREATE TABLE public."user" (
     user_id uuid NOT NULL,
-    pseudo character(150) NOT NULL,
-    email character(250) NOT NULL,
-    password character(300) NOT NULL,
+    pseudo character varying(150) NOT NULL,
+    email character varying(250) NOT NULL,
+    password character varying(300) NOT NULL,
     is_admin boolean NOT NULL,
-    profile_picture character(300),
+    profile_picture character varying(300),
     created_at date NOT NULL,
     updated_at date
 );
@@ -158,15 +158,7 @@ CREATE INDEX fki_user_id ON public.post USING btree (user_id);
 --
 
 ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT comment_id FOREIGN KEY (comment_id) REFERENCES public.comment(comment_id);
-
-
---
--- Name: like post_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id);
+    ADD CONSTRAINT comment_id FOREIGN KEY (comment_id) REFERENCES public.comment(comment_id) ON DELETE CASCADE;
 
 
 --
@@ -174,23 +166,15 @@ ALTER TABLE ONLY public."like"
 --
 
 ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id);
+    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id) ON DELETE CASCADE;
 
 
 --
--- Name: post user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.post
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id);
-
-
---
--- Name: like user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: like post_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id);
+    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id) ON DELETE CASCADE;
 
 
 --
@@ -198,7 +182,23 @@ ALTER TABLE ONLY public."like"
 --
 
 ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id);
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE;
+
+
+--
+-- Name: like user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."like"
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE;
+
+
+--
+-- Name: post user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.post
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE;
 
 
 --
