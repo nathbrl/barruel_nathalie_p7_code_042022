@@ -7,8 +7,8 @@ const checkPassword = require('../middlewares/password-validator');
 const auth = require('../middlewares/auth.middlewares');
 
 router.post('/signup', checkPassword, checkEmail, userCrtl.signup);
-router.post('/login', limiter, userCrtl.login);
-router.get('/', userCrtl.getUsers); // à supprimer
+router.post('/login',  userCrtl.login); //limiter
+router.get('/', userCrtl.getUsers); // à supprimer plus tard
 router.delete('/:id', auth, userCrtl.deleteUser);
 router.put('/:id', auth, userCrtl.updateUser);
 

@@ -90,7 +90,6 @@ exports.login = async (req, res) => {
     await pool.query(queries.checkUserQuery, [req.body.email], (err, result) => {
         const user = result.rows[0];
         if (!user.email) {
-            //console.log(!user.email);
             return res.status(401).json({ error: "This email doesn't exists, signup up first" });
         } else {
             bcrypt.compare(req.body.password, user.password)
@@ -99,7 +98,7 @@ exports.login = async (req, res) => {
                         return res.status(401).json({ error: 'The password is incorrect'});
                     }
                     res.status(200).json({
-                        userPseudo: user.pseudo,
+                        pseudo: user.pseudo,
                         email: user.email,
                         password: undefined,
                         token: jwt.sign(
