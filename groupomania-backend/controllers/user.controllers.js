@@ -107,7 +107,6 @@ exports.login = async (req, res) => {
                             { expiresIn: '24h' }
                         )
                     });
-                   
                 })
                 .catch(error => res.status(500).json({ message: "Authentication error" }));
         }

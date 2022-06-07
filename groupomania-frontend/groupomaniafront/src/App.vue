@@ -11,8 +11,8 @@ import HelloWorld from '@/components/HelloWorld.vue'
          <HelloWorld msg="Bienvenue sur groupomania" />
 
          <nav>
-         <RouterLink to="/">S'inscrire</RouterLink>
-         <RouterLink to="/login">Se connecter</RouterLink>
+         <RouterLink to="/">S'INSCRIRE</RouterLink>
+         <RouterLink to="/login">SE CONNECTER</RouterLink>
          </nav>
       </div>
   </header>
@@ -21,16 +21,18 @@ import HelloWorld from '@/components/HelloWorld.vue'
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 @import '@/assets/base.css';
 
 #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-
   font-weight: normal;
 }
-
+* {
+   font-family: 'Lato', sans-serif;
+}
 header {
   line-height: 1.5;
   max-height: 100vh;
@@ -44,7 +46,7 @@ header {
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: #4e5166;
   transition: 0.4s;
 }
 
@@ -62,7 +64,7 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: #fd2d01;
 }
 
 nav a.router-link-exact-active:hover {
@@ -94,7 +96,6 @@ nav a:first-of-type {
   header {
     display: flex;
     place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
   }
 
   header .wrapper {
@@ -111,7 +112,6 @@ nav a:first-of-type {
     text-align: left;
     margin-left: -1rem;
     font-size: 1rem;
-
     padding: 1rem 0;
     margin-top: 1rem;
   }
