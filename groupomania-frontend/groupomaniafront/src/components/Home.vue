@@ -1,6 +1,5 @@
 <template>
-   <div class="Home"> 
+   <div class="home"> 
         <h1>Accueil</h1>
    </div>
-   <RouterView />
 </template>

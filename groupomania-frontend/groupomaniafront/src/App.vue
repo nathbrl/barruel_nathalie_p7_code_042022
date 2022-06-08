@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
 </script>
 
 <template>
@@ -8,8 +7,7 @@ import HelloWorld from '@/components/HelloWorld.vue'
       <img alt="Vue logo" class="logo" src="@/assets/icon.png" width="125" height="125" />
 
       <div class="wrapper">
-         <HelloWorld msg="Bienvenue sur groupomania" />
-
+         <h1>Bienvenue sur groupomania</h1>
          <nav>
          <RouterLink to="/">S'INSCRIRE</RouterLink>
          <RouterLink to="/login">SE CONNECTER</RouterLink>
@@ -22,7 +20,6 @@ import HelloWorld from '@/components/HelloWorld.vue'
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-@import '@/assets/base.css';
 
 #app {
   max-width: 1280px;
@@ -33,9 +30,16 @@ import HelloWorld from '@/components/HelloWorld.vue'
 * {
    font-family: 'Lato', sans-serif;
 }
+body{
+  display: flex;
+}
 header {
   line-height: 1.5;
   max-height: 100vh;
+  display: flex;
+}
+h1{
+  font-size: 3em;
 }
 
 .logo {
@@ -50,16 +54,8 @@ a,
   transition: 0.4s;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
 nav {
   width: 100%;
-  font-size: 12px;
-  text-align: center;
   margin-top: 2rem;
 }
 
@@ -88,18 +84,14 @@ nav a:first-of-type {
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 0 2rem;
   }
 
-  header {
-    display: flex;
-    place-items: center;
-  }
-
   header .wrapper {
-    display: flex;
+    justify-content: center;
     place-items: flex-start;
     flex-wrap: wrap;
   }

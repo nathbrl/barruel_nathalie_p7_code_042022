@@ -1,44 +1,11 @@
 const express = require("express");
-const pg = require("pg");
 require("dotenv").config();
 const helmet = require('helmet');
-
-//const path = require('path');
-
-const postRoutes = require('./routes/post.routes');
-const userRoutes = require('./routes/user.routes');
-
 const app = express();
-
-//connexion BDD
-const config = {
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-    max: 10,
-}
-
-const pool = new pg.Pool(config);
-
-pool.query('SELECT * FROM public."user"', (err, res) => {
-    res.rows.forEach(user => {
-        //console.log(user.pseudo)
-    }) 
-    pool.end() 
-});
-
-async function connect() {
-    try {
-            pool.on('connect', () => {
-            console.log('Successfully connected to the database groupomania');
-        })
-    } catch (error) {
-        console.error("Unable to connect to the database groupomania", error);
-    }
-}
-connect();
+const path = require('path');
+const pool = require('./config/db');
+const postRoute = require('./routes/post.routes');
+const userRoute = require('./routes/user.routes');
 
 app.use(helmet());
 //Paramétrage des headers
@@ -50,9 +17,8 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-//app.use('/images', express.static(path.join(__dirname, 'images')));
-
-app.use('/api/post', postRoutes);
-app.use('/api/user', userRoutes);
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/api/post', postRoute);
+app.use('/api/user', userRoute);
 
 module.exports = app;

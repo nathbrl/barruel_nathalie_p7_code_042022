@@ -11,6 +11,18 @@ const deleteUserQuery =  'DELETE FROM public."user" WHERE user_id = $1';
 
 const updateUserQuery = 'UPDATE public."user" SET pseudo = $1, profile_picture = $2 WHERE user_id = $3 RETURNING *';
 
+/* POSTS QUERIES */
+
+const allPostQuery = 'SELECT * FROM public.post ORDER BY date DESC';
+
+const createPostQuery = 'INSERT INTO public.post (post_id, content, atachment, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+
+const updatePostQuery = '';
+
+const deletePostQuery = '';
+
+const postLikesQuery = '';
+
 module.exports = {
     getUsersQuery,
     createUserQuery,
@@ -18,21 +30,12 @@ module.exports = {
     deleteUserQuery,
     updateUserQuery,
     checkUserQuery,
-};
 
-/* POSTS QUERIES 
-createPost,
+    allPostQuery,
+    createPostQuery,
     updatePostQuery,
     deletePostQuery,
-    getAllPostsQuery,
     postLikesQuery,
-    
-const createPostQuery = '';
 
-const updatePostQuery = '';
 
-const deletePostQuery = '';
-
-const getAllPostsQuery = '';
-
-const postLikesQuery = '';*/
+};

@@ -17,7 +17,6 @@
          </div> 
       </div>
    </div>
-   <RouterView />
 </template>
 
 <script>
@@ -52,7 +51,7 @@
                   console.log('Félicitation ! Vous êtes connecté !');
                   const tokenStored = localStorage.setItem('token', userToken);
                }
-               this.$router.push({name: 'Home'})
+               this.$router.push({name: 'home'})
             } catch(error) {
                this.errorMsg = error.error;
             }
@@ -67,6 +66,8 @@
 @media (min-width: 1024px) {
   .login {
     min-height: 100vh;
+    width: 100px;
+    margin: auto;
     display: flex;
     align-items: center;
   }
@@ -77,7 +78,6 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
     background: #fff
 }
 
@@ -85,14 +85,15 @@ body {
     margin-bottom:20px;
     border:none;
 }
-
+.label-text{
+   color:#ffd7d7;
+}
 .box {
-    width: 500px;
     padding: 40px;
     background: #4e5166;
     text-align: center;
     transition: 0.25s;
-    margin-top: 100px
+    margin-top: 80px
 }
 
 .box input[type="text"],
@@ -122,8 +123,7 @@ button {
    outline: none;
    color: white;
    border-radius: 24px;
-   transition: 0.25s;
-   cursor: pointer;
+   transition: 0.25s
 }
 .box h1 {
     color: #fff;

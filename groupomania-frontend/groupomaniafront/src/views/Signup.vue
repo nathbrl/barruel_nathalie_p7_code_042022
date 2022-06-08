@@ -1,5 +1,5 @@
 <template>
-   <main class="container"> 
+   <div class="container"> 
       <div class="row"> 
          <div class="col-md-6"> 
             <div class="card"> 
@@ -19,7 +19,7 @@
             </div> 
          </div> 
       </div>
-   </main>
+   </div>
 </template>
 
 <script>
@@ -49,12 +49,11 @@ export default {
             const userData = await response.json();
             if (response.status == 400) {
                this.errorMsg = userData.message;
-               console.log(this.errorMsg);
-            } 
-            this.$router.push({name: 'Home'})
-         }
-         catch(error) {
-            error = this.errorMsg;
+            }
+            this.$router.push({name: 'home'})
+         } catch(error) {
+            this.errorMsg = error.error;
+            //console.log(this.errorMsg = error.message); // Unexpected token u in JSON at position 0
          }
       }
    }
@@ -79,7 +78,6 @@ export default {
 body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
     background: #fff
 }
 
@@ -91,12 +89,11 @@ body {
    color:#ffd7d7;
 }
 .box {
-    width: 500px;
     padding: 40px;
     background: #4e5166;
     text-align: center;
     transition: 0.25s;
-    margin-top: 100px
+    margin-top: 80px
 }
 
 .box input[type="text"],
