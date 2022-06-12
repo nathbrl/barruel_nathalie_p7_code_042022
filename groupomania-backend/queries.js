@@ -13,7 +13,7 @@ const updateUserQuery = 'UPDATE public."user" SET pseudo = $1, profile_picture =
 
 /* POSTS QUERIES */
 
-const allPostQuery = 'SELECT * FROM public.post ORDER BY date DESC';
+const allPostQuery = 'SELECT * FROM public.post ORDER BY created_at ASC'; 
 
 const createPostQuery = 'INSERT INTO public.post (post_id, content, atachment, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
 
@@ -36,6 +36,4 @@ module.exports = {
     updatePostQuery,
     deletePostQuery,
     postLikesQuery,
-
-
 };
