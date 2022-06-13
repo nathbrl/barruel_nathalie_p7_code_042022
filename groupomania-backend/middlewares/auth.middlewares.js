@@ -8,10 +8,10 @@ module.exports = (req, res, next) => {
         }
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwt.verify(token, process.env.RANDOM_TOKEN_SECRET_KEY);
-        const user_id = decodedToken.user_id;
-        if (req.body.user_id && req.body.user_id != user_id) {
+        if (!decodedToken) {
             return res.status(403).json("Unauthorized request")
         } else {
+            req.user = decodedToken;
             next();
         }
     } catch (error) {

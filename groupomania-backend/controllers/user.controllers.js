@@ -22,9 +22,9 @@ async function createUser (user, res) {
     const checkEmail = await pool.query(queries.checkExistingEmailQuery, [user.email] );
     if (checkEmail.rowCount === 0) {
         await pool.query(queries.createUserQuery, [user.user_id, user.pseudo, user.email, user.password, user.is_admin, user.profile_picture, user.created_at, user.updated_at]);
-        res.status(201).send('user was successfully created');
+        res.status(201).send({message: 'user was successfully created'});
     } else {
-        res.status(400).send('user already exists');
+        res.status(400).send({message:'user already exists'});
     }
 }
 
@@ -35,9 +35,9 @@ exports.updateUser = async (user, res) => {
     const id = user.params.id
     await pool.query(queries.updateUserQuery, [user.body.pseudo, user.body.profile_picture, id], (error, results) => {
         if (error) {
-            res.status(400).send('User couldn\'t be updated');
+            res.status(400).send({message: 'User couldn\'t be updated'});
         } else {
-            res.status(200).send('User was successfully updated');
+            res.status(200).send({message:'User was successfully updated'});
         }
     });
     
@@ -51,9 +51,9 @@ exports.deleteUser = async (user, res) => {
     const id = user.params.id;
     await pool.query(queries.deleteUserQuery, [id]);
     if (!id) {
-        res.status(400).send('User doesn\'t exist, deletion impossible');
+        res.status(400).send({message: 'User doesn\'t exist, deletion impossible'});
     } else {
-        res.status(200).send('User was successfully deleted');
+        res.status(200).send({message: 'User was successfully deleted'});
     } 
 }
 
@@ -62,8 +62,8 @@ exports.deleteUser = async (user, res) => {
 */
 exports.signup = async (req, res) => {
     try {
-        if (req.body.password === undefined) {
-            throw 'Mot de passe non défini';
+        if (req.body.password === undefined || req.body.password == '') {
+            return res.status(400).json({ message: 'Mot de passe non défini'});
         }
         const passwordHashed = await bcrypt.hash(req.body.password, 10)
         createUser ({
@@ -87,9 +87,9 @@ exports.signup = async (req, res) => {
  * 
 */
 exports.login = async (req, res) => {
-    await pool.query(queries.checkUserQuery, [req.body.email], (err, result) => {
+    const result = await pool.query(queries.checkUserQuery, [req.body.email]);
         const user = result.rows[0];
-        if (!user.email) {
+        if (user && !user.email) {
             return res.status(401).json({ error: "This email doesn't exists, signup up first" });
         } else {
             bcrypt.compare(req.body.password, user.password)
@@ -104,11 +104,11 @@ exports.login = async (req, res) => {
                         token: jwt.sign(
                             { userId: user.user_id },
                             process.env.RANDOM_TOKEN_SECRET_KEY,
+                            //return is_admin ici
                             { expiresIn: '24h' }
                         )
                     });
                 })
                 .catch(error => res.status(500).json({ message: "Authentication error" }));
-        }
-    });
+    }
 }

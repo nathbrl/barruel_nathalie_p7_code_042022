@@ -36,8 +36,8 @@ export default {
    methods: {
       async click(e) {
          e.preventDefault()
+         debugger
          try {
-            //debugger
             const response = await fetch('http://localhost:3001/api/user/signup', 
             {  method: 'POST',
                headers: {
@@ -47,13 +47,16 @@ export default {
                body: JSON.stringify({ pseudo: this.pseudo, password: this.password, email: this.email})
             })
             const userData = await response.json();
+            console.log(userData);
+
             if (response.status == 400) {
                this.errorMsg = userData.message;
+            } else {
+               console.log('Félicitations votre compte a bien été créé');
+               this.$router.push({name: 'home'})
             }
-            this.$router.push({name: 'home'})
          } catch(error) {
-            this.errorMsg = error.error;
-            //console.log(this.errorMsg = error.message); // Unexpected token u in JSON at position 0
+            console.log(this.errorMsg = error); // Unexpected token u in JSON at position 0
          }
       }
    }
@@ -65,51 +68,51 @@ export default {
 
 @media (min-width: 1024px) {
   .login {
-    min-height: 100vh;
-    width: 100px;
-    margin: auto;
-    display: flex;
-    align-items: center;
+   min-height: 100vh;
+   width: 100px;
+   margin: auto;
+   display: flex;
+   align-items: center;
   }
 }
 * {
    font-family: 'Lato', sans-serif;
 }
 body {
-    margin: 0;
-    padding: 0;
-    background: #fff
+   margin: 0;
+   padding: 0;
+   background: #fff
 }
 
 .card{
-    margin-bottom:20px;
-    border:none;
+   margin-bottom:20px;
+   border:none;
 }
 .label-text{
    color:#ffd7d7;
 }
 .box {
-    padding: 40px;
-    background: #4e5166;
-    text-align: center;
-    transition: 0.25s;
-    margin-top: 80px
+   padding: 10px;
+   background: #4e5166;
+   text-align: center;
+   transition: 0.25s;
+   margin-top: 20px
 }
 
 .box input[type="text"],
 .box input[type="password"] {
-    border: 0;
-    background: none;
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-    border: 2px solid #fd2d01;
-    padding: 10px 10px;
-    width: 250px;
-    outline: none;
-    color: white;
-    border-radius: 24px;
-    transition: 0.25s
+   border: 0;
+   background: none;
+   display: block;
+   margin: 20px auto;
+   text-align: center;
+   border: 2px solid #ffd7d7;
+   padding: 10px 10px;
+   width: 250px;
+   outline: none;
+   color: white;
+   border-radius: 24px;
+   transition: 0.25s
 }
 button {
    border: 0;
@@ -117,7 +120,7 @@ button {
    display: block;
    margin: 20px auto;
    text-align: center;
-   border: 2px solid #ffd7d7;
+   border: 2px solid #44ff44;
    padding: 10px 10px;
    width: 150px;
    outline: none;
@@ -126,37 +129,33 @@ button {
    transition: 0.25s
 }
 .box h1 {
-    color: #fff;
-    font-weight: 500;
-    border-bottom: solid 2px white;
-    margin-bottom: 1em;
+   color: #fff;
+   font-weight: 500;
+   border-bottom: solid 2px white;
+   margin-bottom: 1em;
 }
 
 .box input[type="text"]:focus,
 .box input[type="password"]:focus {
-    width: 300px;
-    border-color: #ff7d7d
+   width: 300px;
+   border-color: #ff7d7d
 }
 input::placeholder{
    color: white;
 }
 .box input[type="submit"] {
-    border: 0;
-    background: none;
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-    border: 2px solid #ff7d7d;
-    padding: 14px 40px;
-    outline: none;
-    color: #fff;
-    border-radius: 24px;
-    transition: 0.25s;
-    cursor: pointer
-}
-
-.box input[type="submit"]:hover {
-    background: #ff7d7d;
+   border: 0;
+   background: none;
+   display: block;
+   margin: 20px auto;
+   text-align: center;
+   border: 2px solid #ff7d7d;
+   padding: 14px 40px;
+   outline: none;
+   color: #fff;
+   border-radius: 24px;
+   transition: 0.25s;
+   cursor: pointer
 }
 .text{
    color: #fff;

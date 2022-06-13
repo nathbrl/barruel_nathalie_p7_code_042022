@@ -16,23 +16,22 @@ exports.getAllPosts = async (req, res, next) => {
  * CREATE ONE POST
  */   
 exports.createPost = async (req, res, next) => {
-   const userId = req.headers.authorization;
-   console.log(userId);
+   const userId = await pool.query(queries.userIdQuery);
+   console.log(req.user);
    const imageUrl = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
    //console.log(imageUrl);
-   const content = req.body.content;
+   const postContent = req.body.content;
    //console.log(content);
    const post = {
-      post_id: uuidv4(),
-      content: content,
+      content: postContent,
       atachment: imageUrl,
       created_at: new Date(),
       updated_at: null,
-      user_id: userId,
+      user_id: req.user.userId,
    };
-   console.log(post);
+   //console.log(post);
    //ENVOIE LA REQUETE AVEC MULTER ET LES VALEURS PAR DEFAUT
-   await pool.query(queries.createPostQuery, [post.post_id, post.content, post.atachment, post.created_at, post.updated_at, post.user_id], function (err, result) {
+   await pool.query(queries.createPostQuery, [ post.content, post.atachment, post.created_at, post.updated_at, post.user_id], function (err, result) {
       if (err) {
          throw err;
       } else {
@@ -40,4 +39,11 @@ exports.createPost = async (req, res, next) => {
       }
    })
 };
-    
+
+exports.updatePost = async (req, res, next) => {
+   const postId = '';
+   const userId = '';
+   const postAtachment = req.imageUrl;
+   const postContent = req.body.content
+}
+

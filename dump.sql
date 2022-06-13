@@ -4,6 +4,7 @@
 
 -- Dumped from database version 14.2
 -- Dumped by pg_dump version 14.2
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
