@@ -17,7 +17,7 @@ const allPostQuery = 'SELECT * FROM public.post ORDER BY created_at ASC';
 
 const createPostQuery = 'INSERT INTO public.post (content, atachment, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
 
-const userIdQuery = 'SELECT user_id FROM public.post WHERE user_id = user_id';
+const userIdQuery = 'SELECT user_id FROM public.post WHERE id = $1';
 
 const updatePostQuery = 'UPDATE public.post SET content = $1, atachment = $2';
 

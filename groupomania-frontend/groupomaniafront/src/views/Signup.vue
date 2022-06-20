@@ -12,7 +12,7 @@
                   <label for="pseudo" class="text">Choisissez un mot de passe</label>
                   <input type="password" name="password" placeholder="mot de passe" v-model="password"> {{ password }}
                   <div>
-                     <button @click="click">Je m'inscris</button>
+                     <button class="signup-button" @click="click">Je m'inscris</button>
                      <span v-if="errorMsg"> {{ errorMsg }}</span>
                   </div> 
                </form> 
@@ -36,7 +36,6 @@ export default {
    methods: {
       async click(e) {
          e.preventDefault()
-         debugger
          try {
             const response = await fetch('http://localhost:3001/api/user/signup', 
             {  method: 'POST',
@@ -53,10 +52,10 @@ export default {
                this.errorMsg = userData.message;
             } else {
                console.log('Félicitations votre compte a bien été créé');
-               this.$router.push({name: 'home'})
+               this.$router.push({name: 'login'})
             }
          } catch(error) {
-            console.log(this.errorMsg = error); // Unexpected token u in JSON at position 0
+            console.log(this.errorMsg = error);
          }
       }
    }
@@ -114,7 +113,7 @@ body {
    border-radius: 24px;
    transition: 0.25s
 }
-button {
+.signup-button {
    border: 0;
    background: none;
    display: block;

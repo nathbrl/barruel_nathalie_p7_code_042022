@@ -33,13 +33,12 @@ async function createUser (user, res) {
 */
 exports.updateUser = async (user, res) => {
     const id = user.params.id
-    await pool.query(queries.updateUserQuery, [user.body.pseudo, user.body.profile_picture, id], (error, results) => {
-        if (error) {
-            res.status(400).send({message: 'User couldn\'t be updated'});
-        } else {
-            res.status(200).send({message:'User was successfully updated'});
-        }
-    });
+    const update = await pool.query(queries.updateUserQuery, [user.body.pseudo, user.body.profile_picture, id]);
+    if(!update) {
+        res.status(400).send({message: 'User couldn\'t be updated'});
+    } else {
+        res.status(200).send({message:'User was successfully updated'});
+    }
     
 }
 
@@ -67,7 +66,7 @@ exports.signup = async (req, res) => {
         }
         const passwordHashed = await bcrypt.hash(req.body.password, 10)
         createUser ({
-            user_id: uuidv4(),
+            user_id: uuidv4(), // à retirer + dans la requête 
             pseudo: req.body.pseudo,
             email: req.body.email,
             password: passwordHashed,
@@ -102,7 +101,10 @@ exports.login = async (req, res) => {
                         email: user.email,
                         password: undefined,
                         token: jwt.sign(
-                            { userId: user.user_id },
+                            { userId: user.user_id, 
+                            is_admin: true,
+                            pseudo: user.pseudo,
+                            email: user.email },
                             process.env.RANDOM_TOKEN_SECRET_KEY,
                             //return is_admin ici
                             { expiresIn: '24h' }

@@ -3,7 +3,6 @@ require("dotenv").config();
 const helmet = require('helmet');
 const app = express();
 const path = require('path');
-const pool = require('./config/db');
 const postRoute = require('./routes/post.routes');
 const userRoute = require('./routes/user.routes');
 

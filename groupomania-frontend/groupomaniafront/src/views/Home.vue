@@ -1,7 +1,7 @@
 <template>
     <div class="container px-4 py-5 mx-auto">
         <div class="row d-flex justify-content-center">
-            <div class="card">
+            <div class="card-home">
                 <div class="row px-3">
                     <img class="profile-pic mr-3"
                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png"
@@ -26,7 +26,7 @@
                                 <img src="https://i.imgur.com/dwiGgJr.jpg" height="40" width="40"
                                     class="rounded-circle">
                                 <div class="d-flex flex-column ms-2">
-                                    <h6 class="mb-1 text-primary">Emma</h6>
+                                    <h6 class="mb-1 text-primary">Toto</h6>
                                 <div class="d-flex flex-row">
                                     <span class="text-muted fw-normal fs-10">May 22,2020 12:10 PM</span>
                                 </div>
@@ -63,7 +63,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
-div.card {
+div.card-home {
     border-radius: 10px;
     width: 500px;
     padding: 20px;

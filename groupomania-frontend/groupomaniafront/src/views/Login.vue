@@ -9,7 +9,7 @@
                   <input type="text" class="text" name="email" placeholder="email" v-model="email"> {{ email }}
                   <input type="password" class="text" name="password" placeholder="mot de passe" v-model="password"> {{ password }}
                   <div>
-                     <button @click= "click">Je me connecte</button>
+                     <button class="login-button" @click= "click">Je me connecte</button>
                      <span v-if="errorMsg"> {{ errorMsg }}</span>
                   </div> 
                </form> 
@@ -111,7 +111,7 @@ body {
    border-radius: 24px;
    transition: 0.25s
 }
-button {
+.login-button {
    border: 0;
    background: none;
    display: block;
