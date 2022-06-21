@@ -3,10 +3,7 @@ import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
 
-
-
 const router = createRouter({
-
    history: createWebHistory(import.meta.env.BASE_URL),
    routes : [
       {
@@ -36,9 +33,7 @@ const router = createRouter({
  ]
 })
 router.beforeEach((to, from, next) => {
-   
    const main = to.matched[0];
-   debugger
    console.log('test1', main.meta);
    if(main?.meta?.auth == true){
       console.log('test2');
@@ -48,6 +43,5 @@ router.beforeEach((to, from, next) => {
       }
    }
    next();
-   
 });
 export default router

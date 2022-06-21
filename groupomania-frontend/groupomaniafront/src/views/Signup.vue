@@ -6,11 +6,11 @@
                <form action="post" class="box"> 
                   <h1>S'inscrire</h1> 
                   <label for="pseudo" class="text">Choisissez un pseudo</label>
-                  <input type="text" name="pseudo" placeholder=" pseudo" v-model="pseudo"> {{ pseudo }}
+                  <input type="text" name="pseudo" placeholder=" pseudo" v-model="pseudo">
                   <label for="email" class="text">Votre adresse mail</label>
-                  <input type="text" name="email" placeholder="email" v-model="email"> {{ email }}
+                  <input type="text" name="email" placeholder="email" v-model="email">
                   <label for="pseudo" class="text">Choisissez un mot de passe</label>
-                  <input type="password" name="password" placeholder="mot de passe" v-model="password"> {{ password }}
+                  <input type="password" name="password" placeholder="mot de passe" v-model="password">
                   <div>
                      <button class="signup-button" @click="click">Je m'inscris</button>
                      <span v-if="errorMsg"> {{ errorMsg }}</span>

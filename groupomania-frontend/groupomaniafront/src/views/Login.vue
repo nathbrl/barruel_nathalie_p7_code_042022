@@ -5,9 +5,10 @@
             <div class="card"> 
                <form action="post" class="box"> 
                   <h1>Se connecter</h1> 
+                  <h3 class="text">Si vous n'avez pas de compte, créez-en un  avant de vous connecter sur l'application</h3>
                   <p class="text"> Entrez votre mail et votre mot de passe </p> 
-                  <input type="text" class="text" name="email" placeholder="email" v-model="email"> {{ email }}
-                  <input type="password" class="text" name="password" placeholder="mot de passe" v-model="password"> {{ password }}
+                  <input type="text" class="text" name="email" placeholder="email" v-model="email">
+                  <input type="password" class="text" name="password" placeholder="mot de passe" v-model="password">
                   <div>
                      <button class="login-button" @click= "click">Je me connecte</button>
                      <span v-if="errorMsg"> {{ errorMsg }}</span>
