@@ -14,8 +14,7 @@ exports.getAllPosts = async (req, res, next) => {
  * CREATE ONE POST
  */   
 exports.createPost = async (req, res, next) => {
-   const imageUrl = req.body.atachment;
-   //req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
+   const imageUrl = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
    const postContent = req.body.content;
    const post = {
       content: postContent,
@@ -33,21 +32,59 @@ exports.createPost = async (req, res, next) => {
       }
 };
 
-exports.deletePost = async (req, res, next) => {
-   const postId = req.params.id;
-   const userId = req.user.userId;
-   const suppress = await pool.query(queries.deletePostQuery, [postId]);
-      console.log(result.rows);
-
-      if (!suppress) {
-         res.status(400).json({ message: 'Sorry you can not delete this post'});
-      } else {
-         if (userId)
-         res.status(200).json({ message: 'Publication deleted'});
-      }
-
-}
-
 exports.updatePost = async (req, res, next) => {
+   const id = req.params.id;
+   const postId = await pool.query(queries.postIdQuery, [id]);
+   //const imageUrl = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
+   console.log(req.user.userId);
+   console.log(req.user.is_admin == false);
+   console.log(postId.rows[0].user_id);
+   
+   if (!postId) {
+      res.status(400).json({ message: 'Aucun post ne correspond dans la base de donnée'});
+   } else {
+      if(req.user.userId == postId.rows[0].user_id) {
+         const postUpdate = { 
+            content: req.body.content,
+            atachment: req.body.atachment,
+            updated_at: new Date()
+         }
+         console.log(postUpdate.atachment);
+         const postModif = await pool.query(queries.updatePostQuery, [postUpdate.content, postUpdate.atachment, postUpdate.updated_at, id]);
+         if(!postModif) {
+            res.status(400).json({ message: 'Publication was not updated' });
+         } else {
+            res.status(200).json({ message: 'Publication was updated successfully' });
+         }
+         console.log('Je peux modifier le post');
+      } else {
+         console.log('Je n\'ai pas le droit de modifier le post');
+      }
+      console.log('il y a bien un post');
+   }
+}
+
+exports.deletePost = async (req, res, next) => {
+   const id = req.params.id;
+   const postId = await pool.query(queries.postIdQuery, [id]);
+   
+   if (!postId) {
+      res.status(400).json({ message: 'Aucun post ne correspond dans la base de donnée'});
+   } else {
+      if(req.user.userId == postId.rows[0].user_id) {
+         const postDelete = await pool.query(queries.deletePostQuery, [ id]);
+         console.log(postDelete);
+         if(!postDelete) {
+            res.status(400).json({ message: 'Publication was not deleted' });
+         } else {
+            res.status(200).json({ message: 'Publication was deleted successfully' });
+         }
+         console.log('Je peux supprimer le post');
+      } else {
+         console.log('Je n\'ai pas le droit de supprimer le post');
+      }
+      console.log('il y a bien un post');
+   }
 
 }
+
