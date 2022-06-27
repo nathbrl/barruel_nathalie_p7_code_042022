@@ -7,18 +7,18 @@ const fs = require('fs');
  */
 exports.getAllPosts = async (req, res, next) => {
    const posts = await pool.query(queries.allPostQuery);
+   console.log(posts);
    res.status(200).json(posts.rows);
-}    
-
+}   
 /**
  * CREATE ONE POST
  */   
 exports.createPost = async (req, res, next) => {
-   const imageUrl = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
+   const image = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
    const postContent = req.body.content;
    const post = {
       content: postContent,
-      atachment: imageUrl,
+      atachment: image,
       created_at: new Date(),
       updated_at: null,
       user_id: req.user.userId,
@@ -35,7 +35,7 @@ exports.createPost = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
    const id = req.params.id;
    const postId = await pool.query(queries.postIdQuery, [id]);
-   //const imageUrl = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
+   const image = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
    console.log(req.user.userId);
    console.log(req.user.is_admin == false);
    console.log(postId.rows[0].user_id);
@@ -46,7 +46,7 @@ exports.updatePost = async (req, res, next) => {
       if(req.user.userId == postId.rows[0].user_id) {
          const postUpdate = { 
             content: req.body.content,
-            atachment: req.body.atachment,
+            atachment: image,
             updated_at: new Date()
          }
          console.log(postUpdate.atachment);

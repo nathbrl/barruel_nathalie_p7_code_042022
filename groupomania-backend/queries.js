@@ -13,7 +13,7 @@ const deleteUserQuery =  'DELETE FROM public."user" WHERE user_id = $1';
 
 /* POSTS QUERIES */
 
-const allPostQuery = 'SELECT * FROM public.post ORDER BY created_at ASC'; 
+const allPostQuery = 'SELECT public.post.*, pseudo, profile_picture FROM public.post INNER JOIN public."user" ON public."user".user_id=public.post.user_id ORDER BY public.post.created_at ASC'; 
 
 const createPostQuery = 'INSERT INTO public.post (content, atachment, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
 

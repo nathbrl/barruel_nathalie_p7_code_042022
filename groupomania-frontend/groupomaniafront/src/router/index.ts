@@ -34,11 +34,8 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
    const main = to.matched[0];
-   console.log('test1', main.meta);
    if(main?.meta?.auth == true){
-      console.log('test2');
       if(!localStorage.getItem('token')) {
-         console.log('test3');
          return next({ name: 'signup' });
       }
    }
