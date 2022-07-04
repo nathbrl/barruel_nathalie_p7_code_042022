@@ -7,7 +7,6 @@ const fs = require('fs');
  */
 exports.getAllPosts = async (req, res, next) => {
    const posts = await pool.query(queries.allPostQuery);
-   console.log(posts);
    res.status(200).json(posts.rows);
 }   
 /**
@@ -72,7 +71,7 @@ exports.deletePost = async (req, res, next) => {
       res.status(400).json({ message: 'Aucun post ne correspond dans la base de donnée'});
    } else {
       if(req.user.userId == postId.rows[0].user_id) {
-         const postDelete = await pool.query(queries.deletePostQuery, [ id]);
+         const postDelete = await pool.query(queries.deletePostQuery, [id]);
          console.log(postDelete);
          if(!postDelete) {
             res.status(400).json({ message: 'Publication was not deleted' });

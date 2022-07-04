@@ -9,7 +9,7 @@
                <div class="mar-top">
                   <input type="file" name="" id="input-file">
                   <a href="#"><i class="fa fa-paper-plane"></i>
-                     <span class="ml-1" @click="getPosts()">Poster</span></a>
+                     <span class="ml-1">Poster</span></a>
                </div>
                <div class="like p-2 cursor">
                </div>
@@ -18,25 +18,26 @@
       </div>
    </div>
    <div class="container mt-5" v-for="post in posts">
-   {{ post }}
       <div class="d-flex justify-content-center row">
          <div class="col-md-8">
             <div class="d-flex flex-column comment-section">
                <div class="bg-white p-2">
-                  <div class="d-flex flex-row user-info"><img class="rounded-circle"
-                        src="{{post.profile_picture}}" width="40">
+                  <div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{post.profile_picture}}"
+                        width="40">
                      <div class="d-flex flex-column justify-content-start ml-2">
-                        <span class="d-block font-weight-bold name">{{post.pseudo}}</span>
+                        <span class="d-block font-weight-bold name">{{ post.pseudo }}</span>
                      </div>
                      <div class="d-flex flex-column justify-content-start ml-2">
-                        <span class="date text-black-50">{{post.created_at}}</span>
-                     </div>
-                     <div class="d-flex flex-column justify-content-start ml-2">
-                        <span class="date text-black-50">{{post.updated_at}}</span>
+                        <span class="date text-black-50">{{ new Date(post.created_at).toLocaleString('en-IN', {
+                              "year": "numeric",
+                              "month": "long",
+                              "day": "numeric"
+                           })
+                        }}</span>
                      </div>
                   </div>
                   <div class="mt-2">
-                     <p class="comment-text">{{post.content}}</p>
+                     <p class="comment-text">{{ post.content }}</p>
                   </div>
                   <div class="mt-2">
                      <img class="post-image" src="{{post.atachment}}" alt="image du post">
@@ -54,9 +55,33 @@
                         src="{{post.profile_picture}}" width="40">
                      <textarea class="form-control-comment ml-1 shadow-none textarea"></textarea>
                   </div>
-                  <a @click="loadComments(post.id)"></a>
                   <div class="mt-2 text-right">
                      <button class="btn btn-primary btn-sm shadow-none" type="button">Commenter</button>
+                  </div>
+                  <div class="mt-2 text-right">
+                     <button @click="loadComments(post.id)" class="btn btn-sm shadow-none" id="btn-comms" type="button">Afficher les commentaires</button>
+                  </div>
+                  <div class="container mt-5 mb-5" v-for="comment in comments">
+                     <div class="row height d-flex justify-content-center align-items-center">
+                        <div class="col-md-7">
+                           <div class="card">
+                              <div class="d-flex flex-row p-3"> <img src="" width="40" height="40"
+                                    class="rounded-circle mr-3">
+                                 <div class="w-100">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                       <div class="d-flex flex-row align-items-center"> <span class="mr-2">{{comment.pseudo}}</span> </div>
+                                       <small>{{new Date(comment.created_at).toLocaleString('en-IN', {
+                                          "year": "numeric",
+                                          "month": "long",
+                                          "day": "numeric"
+                                       })}}</small>
+                                    </div>
+                                    <p class="text-justify comment-text mb-0">{{comment.content}}</p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
                   </div>
                </div>
             </div>
@@ -69,23 +94,38 @@
 import { getAuthenticationHeaders } from '../utils/utils'
 export default {
    async mounted() {
-      console.log('je rentre dans ma fonction');
+      // POSTS
          try {
-            debugger
             const headers = getAuthenticationHeaders();
             if (headers) {
                const posts = await fetch("http://localhost:3001/api/post/",{  
                   method: 'GET',
-                  headers}
-               );
+                  headers
+               });
                this.posts = await posts.json();
-               console.log(this.posts);
+               //console.log(this.posts);
             } else {
                console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
             }
          } catch (error) {
             console.log(error);
          }
+         // COMMENTS
+         try {
+         const headers = getAuthenticationHeaders();
+         if(headers) {
+            const comments = await fetch('http://localhost:3001/api/post/:id/comments', {
+               method: 'GET',
+               headers
+            })
+            this.comments = await comments.json();
+            //console.log((this.comments));
+         } else {
+            console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
+         }
+      } catch (error) {
+         console.log(error);
+      }
    },
    data() {
       return {
@@ -97,15 +137,23 @@ export default {
                updated_at: "",
             }
          ],
+         comments: [
+            {
+               content: "",
+               created_at: "",
+               updated_at: "",
+               post_id: "",
+               user_id: "",
+            }
+         ],
       }
    },
    methods: {
       async getPosts() {
       },
-      async loadComment(postId){
-         const data = fetch('http://localhost:3001/api')
-      }
-
+      async loadComments(postId){
+         const data = fetch('http://localhost:3001/api/post/:id/comments');
+      },
    }
 }
 </script>
@@ -152,7 +200,7 @@ body {
 
 .text-right button {
    padding: 10px;
-   background-color: #fd2d01;
+   background-color: #4e5166;
    color: white;
    border: none;
    border-radius: 15px;
@@ -185,7 +233,10 @@ body {
    font-weight: 600;
    font-size: 18px;
 }
-
+#btn-comms {
+   background-color: #ffd7d7;
+   color:#4e5166;
+}
 .cursor {
    cursor: pointer
 }

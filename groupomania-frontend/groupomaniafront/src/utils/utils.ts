@@ -1,6 +1,5 @@
 export function getAuthenticationHeaders() {
     const token = localStorage.getItem('token');
-        console.log(token);
         
     if(token) {
         const myHeaders = new Headers({
