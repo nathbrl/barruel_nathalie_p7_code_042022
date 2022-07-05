@@ -23,11 +23,10 @@ const updatePostQuery = 'UPDATE public.post SET content = $1, atachment = $2, up
 
 const deletePostQuery = 'DELETE FROM public.post WHERE post_id = $1';
 
-const postCommentsQuery = 'SELECT public.post.*, pseudo, profile_picture FROM public.post INNER JOIN public."user" ON public."user".user_id=public.comment.user_id INNER JOIN public.comment ON public.post.post_id=public.comment.post_id';
+const postCommentsQuery = 'SELECT public.post.*, pseudo, profile_picture FROM public.post INNER JOIN public.comment ON public.post.post_id=public.comment.post_id INNER JOIN public."user" ON public."user".user_id=public.comment.user_id';
 
 /* COMMENT QUERIES */
-const allCommentsQuery = 'SELECT * FROM public.comment'; 
-//SELECT public.comment.* FROM public.post INNER JOIN public.post ON public.comment.user_id=public.post.user_id => BONNE QUERY ?
+const allCommentsQuery = 'SELECT * FROM public.comment';
 
 const commentIdQuery = 'SELECT * FROM public.comment';
 

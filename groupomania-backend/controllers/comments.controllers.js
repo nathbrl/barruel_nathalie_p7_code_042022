@@ -1,10 +1,9 @@
 const queries = require('../queries');
 const pool = require('../config/db');
-const { query } = require('express');
 
 exports.getAllComments = async (req, res, next) => {
-    const allComments = await pool.query(queries.allCommentsQuery);
-    //console.log(allComments);
+    const allComments = await pool.query(queries.postCommentsQuery);
+    //console.log(allComments.rows);
     res.status(200).json(allComments.rows);
 }
 
@@ -18,7 +17,7 @@ exports.createComment = async (req, res, next) => {
         user_id: req.user.userId,
    };
    //console.log(comment);
-    const publishComment = await pool.query(queries.createCommentQuery, [ comment.content, comment.created_at, comment.updated_at, comment.post_id, comment.user_id]);
+    const publishComment = await pool.query(queries.createCommentQuery, [comment.content, comment.created_at, comment.updated_at, comment.post_id, comment.user_id]);
     //console.log(publishComment);
         if (publishComment) {
             res.status(201).json({ message: `New comment added` });

@@ -13,7 +13,7 @@ exports.getAllPosts = async (req, res, next) => {
  * CREATE ONE POST
  */   
 exports.createPost = async (req, res, next) => {
-   const image = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
+   const image = req.protocol + "://" + req.get("host") + "/images" + req.file.filename;
    const postContent = req.body.content;
    const post = {
       content: postContent,
@@ -34,13 +34,11 @@ exports.createPost = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
    const id = req.params.id;
    const postId = await pool.query(queries.postIdQuery, [id]);
-   const image = req.protocol + "://" + req.get("host") + "/images" + req.file?.filename;
-   console.log(req.user.userId);
-   console.log(req.user.is_admin == false);
-   console.log(postId.rows[0].user_id);
+   const image = req.protocol + "://" + req.get("host") + "/images" + req.file.filename;
+   //console.log(image);
    
    if (!postId) {
-      res.status(400).json({ message: 'Aucun post ne correspond dans la base de donnée'});
+      res.status(400).json({ message: 'Aucun post ne correspond dans la base de donnée'}); 
    } else {
       if(req.user.userId == postId.rows[0].user_id) {
          const postUpdate = { 
@@ -48,7 +46,7 @@ exports.updatePost = async (req, res, next) => {
             atachment: image,
             updated_at: new Date()
          }
-         console.log(postUpdate.atachment);
+         //console.log(postUpdate.atachment);
          const postModif = await pool.query(queries.updatePostQuery, [postUpdate.content, postUpdate.atachment, postUpdate.updated_at, id]);
          if(!postModif) {
             res.status(400).json({ message: 'Publication was not updated' });
