@@ -5,10 +5,10 @@
             <div class="panel-body">
                <h2>Exprimez-vous !</h2>
                <form method="POST" action="/images" enctype="multipart/form-data">
-                  <textarea class="form-control" rows="2" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
+                  <textarea class="form-control" rows="2" v-model="post.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                   <div class="mar-top">
-                     <input type="file" name="image" id="input-file">
-                     <a href="#"><i class="fa fa-paper-plane"></i><span class="ml-1">Poster</span></a>
+                     <input @change="showImage" type="file" name="image" id="input-file">
+                     <a href="#"><i class="fa fa-paper-plane"></i><span class="ml-1" @click="createPost">Poster</span></a>
                   </div>
                </form>
             </div>
@@ -50,7 +50,7 @@ export default {
          posts: [
             {
                content: "",
-               atachment: "",
+               image: "",
                created_at: "",
                updated_at: "",
             }
@@ -64,6 +64,10 @@ export default {
                user_id: "",
             }
          ],
+         post: {
+
+         },
+
       }
    },
    components: {
@@ -72,25 +76,34 @@ export default {
    methods: {
       async getPosts() {
       },
-      async loadComments(postId){
+      async createPost(){
          try {
             const headers = getAuthenticationHeaders();
+            const postBody = JSON.stringify(this.post);
             debugger
-         if(headers) {
-            const comments = await fetch(`http://localhost:3001/api/post/${postId}/comments`, {
-               method: 'GET',
-               headers
-            })
-            console.log(comments);
-            this.comments = await comments.json();
-            //console.log((this.comments));
-         } else {
-            console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
-         }
+            if (headers) {
+               debugger
+               const formData = new FormData();
+               formData.append('document', postBody);
+               formaData.append('file', image);
+               const newPost = await fetch("http://localhost:3001/api/post", 
+               {  method: "POST",
+                  headers,
+                  body: formData,  
+               }
+               );
+               console.log(newPost);
+               this.newPost = await newPost.json();
+               console.log(this.newPost);
+            }
          } catch (error) {
             console.log(error);
          }
       },
+      async showImage(event) {
+         debugger
+         const image = event.target.file;
+      }
    }
 }
 </script>
@@ -128,10 +141,6 @@ body {
    border: solid 1px #fd2d01;
 }
 
-.post-image{
-   width: 100%;
-   height: 350px;
-}
 
 .text-right {
    display: flex;
@@ -154,14 +163,6 @@ span {
 .text-right button:hover, #btn-comms:hover{
    background-color: #fd2d01;
    color: white;
-}
-
-.date {
-   font-size: 12px
-}
-
-.comment-text, .fs-12 {
-   font-size: 14px
 }
 
 .fa {

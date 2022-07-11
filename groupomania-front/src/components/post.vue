@@ -3,7 +3,7 @@
         <div class="col-md-8">
             <div class="d-flex flex-column comment-section">
                 <div class="bg-white p-2">
-                    <div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{ post.profile_picture }}"
+                    <div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{ post.profile_picture }}" alt="profil"
                             width="40">
                         <div class="d-flex flex-column justify-content-start ml-2">
                             <span class="d-block font-weight-bold name">{{ post.pseudo }}</span>
@@ -16,7 +16,7 @@
                         <p class="comment-text">{{ post.content }}</p>
                     </div>
                     <div class="mt-2">
-                        <img class="post-image" src="{{ post.atachment }}" alt="image du post">{{ post.atachment }}
+                        <img class="post-image" src="{{ post.image }}" alt="">{{ post.image }}
                     </div>
                 </div>
                 <div class="bg-white">
@@ -37,7 +37,7 @@
                 </div>
                 <div class="bg-light p-2">
                     <div class="d-flex flex-row align-items-start"><img class="rounded-circle"
-                            src="{{ post.profile_picture }}" width="40">
+                            src="{{ post.profile_picture }}" alt="profil" width="40">
                         <textarea class="form-control-comment ml-1 shadow-none textarea"></textarea>
                     </div>
                     <div class="mt-2 text-right">
@@ -84,17 +84,16 @@ export default {
         async loadComments(postId) {
             try {
                 const headers = getAuthenticationHeaders();
-                debugger
                 if (headers) {
                     const comments = await fetch(`http://localhost:3001/api/post/${postId}/comments`, {
                         method: 'GET',
                         headers
                     })
-                    console.log(comments);
+                    //console.log(comments);
                     this.comments = await comments.json();
-                    //console.log((this.comments));
                 } else {
                     console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
+                    comment.status(400).json({ message: 'Aucun post ne correspond à cet identifiant'});
                 }
             } catch (error) {
                 console.log(error);
