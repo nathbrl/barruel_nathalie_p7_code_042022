@@ -13,13 +13,14 @@ exports.getAllPosts = async (req, res, next) => {
  * CREATE ONE POST
  */   
 exports.createPost = async (req, res, next) => {
-   //const image = req.protocol + "://" + req.get("host") + "/" + req.file.filename;
-   //console.log(image);
-   console.log(req);
+   console.log('toto', req.file.filename);
+   console.log(req.file);
+   const image = req.protocol + "://" + req.get("host") + "/images/" + req.file.filename;
+   console.log(image);
    const postContent = JSON.parse(req.body.document);
    const post = {
-      content: postContent,
-      image: "",
+      content: postContent.content,
+      image: image,
       created_at: new Date(),
       updated_at: null,
       user_id: req.user.userId,
@@ -27,16 +28,17 @@ exports.createPost = async (req, res, next) => {
    //ENVOIE LA REQUETE AVEC MULTER ET LES VALEURS PAR DEFAUT
    const publishPost = await pool.query(queries.createPostQuery, [ post.content, post.image, post.created_at, post.updated_at, post.user_id]) 
       if (publishPost) {
-         res.status(201).json({ message: `New post added` });
+         res.status(201).json(post);
       } else {
          res.status(400).json({ message: `New post not added` });
       }
 };
 
 exports.updatePost = async (req, res, next) => {
+   
    const id = req.params.id;
    const postId = await pool.query(queries.postIdQuery, [id]);
-   const image = req.protocol + "://" + req.get("host") + "/"+ req.file.filename;
+   const image = req.protocol + "://" + req.get("host") + "/images/" + req.file.filename;
    console.log(image);
    
    if (!postId) {

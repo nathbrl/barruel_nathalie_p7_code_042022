@@ -6,7 +6,7 @@
                         class="rounded-circle mr-3" id="image-comment">
                     <div class="w-100">
                         <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex flex-row align-items-center"> <span class="mr-2">pseudo</span></div>
+                            <div class="d-flex flex-row align-items-center"> <span class="mr-2">{{comment.pseudo}}</span></div>
                             <small>{{ formatDate(comment.created_at) }}</small>
                         </div>
                         <p class="text-justify comment-text mb-0">{{ comment.content }}</p>

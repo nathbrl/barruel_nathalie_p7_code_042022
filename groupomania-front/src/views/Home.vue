@@ -7,7 +7,7 @@
                <form method="POST" action="/images" enctype="multipart/form-data">
                   <textarea class="form-control" rows="2" v-model="post.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                   <div class="mar-top">
-                     <input @change="showImage" type="file" name="image" id="input-file">
+                     <input @change="selectFile" type="file" name="image" id="input-file">
                      <a href="#"><i class="fa fa-paper-plane"></i><span class="ml-1" @click="createPost">Poster</span></a>
                   </div>
                </form>
@@ -35,7 +35,6 @@ export default {
                   headers
                });
                this.posts = await posts.json();
-               //console.log(this.posts);
             } else {
                console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
             }
@@ -53,6 +52,7 @@ export default {
                image: "",
                created_at: "",
                updated_at: "",
+               likes: ""
             }
          ],
          comments: [
@@ -67,11 +67,11 @@ export default {
          post: {
 
          },
-
+         image: {},
       }
    },
    components: {
-      post: PostComponent
+      post: PostComponent,
    },
    methods: {
       async getPosts() {
@@ -80,12 +80,12 @@ export default {
          try {
             const headers = getAuthenticationHeaders();
             const postBody = JSON.stringify(this.post);
-            debugger
+            console.log(postBody);
             if (headers) {
-               debugger
                const formData = new FormData();
                formData.append('document', postBody);
-               formaData.append('file', image);
+               formData.append('image', this.image);
+
                const newPost = await fetch("http://localhost:3001/api/post", 
                {  method: "POST",
                   headers,
@@ -93,17 +93,18 @@ export default {
                }
                );
                console.log(newPost);
-               this.newPost = await newPost.json();
+               this.posts.unshift(await newPost.json());
                console.log(this.newPost);
             }
          } catch (error) {
             console.log(error);
          }
       },
-      async showImage(event) {
+      selectFile(event) {
          debugger
-         const image = event.target.file;
-      }
+         this.image = event.target.files[0];
+      },
+      
    }
 }
 </script>
@@ -236,5 +237,10 @@ span {
 
 #input-file {
    color: #fd2d01;
+}
+.like-counter{
+   margin-left: 5px;
+   color: #fd2d01;
+   font-weight: 600;
 }
 </style>
