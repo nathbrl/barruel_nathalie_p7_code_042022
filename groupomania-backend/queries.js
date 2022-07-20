@@ -23,16 +23,8 @@ const updatePostQuery = 'UPDATE public.post SET content = $1, image = $2, update
 
 const deletePostQuery = 'DELETE FROM public.post WHERE post_id = $1';
 
-const postCommentsQuery = 'SELECT public.post.*, pseudo, profile_picture FROM public.post INNER JOIN public.comment ON public.post.post_id=public.comment.post_id INNER JOIN public."user" ON public."user".user_id=public.comment.user_id';
+const postQuery = 'SELECT public.post.*, pseudo, profile_picture FROM public.post';
 
-/* COMMENT QUERIES */
-const allCommentsQuery = 'SELECT * FROM public.comment ORDER BY created_at DESC';
-
-const commentIdQuery = 'SELECT * FROM public.comment ORDER BY created_at DESC';
-
-const createCommentQuery = 'INSERT INTO public.comment (content, created_at, updated_at, post_id, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-
-const deleteCommentQuery = 'DELETE FROM public.comment WHERE comment_id = $1';
 /* LIKE QUERIES */
 
 module.exports = {
@@ -48,10 +40,5 @@ module.exports = {
     createPostQuery,
     updatePostQuery,
     deletePostQuery,
-    postCommentsQuery,
-
-    allCommentsQuery,
-    commentIdQuery,
-    createCommentQuery,
-    deleteCommentQuery
+    postQuery,
 };

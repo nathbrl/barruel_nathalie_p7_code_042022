@@ -13,11 +13,28 @@ exports.getAllPosts = async (req, res, next) => {
  * CREATE ONE POST
  */   
 exports.createPost = async (req, res, next) => {
-   console.log('toto', req.file.filename);
-   console.log(req.file);
+  //POST WITH MEDIA
+  const postContent = JSON.parse(req.body.document);
+
+  if(req.body.image == undefined){
+     //POST WITHOUT MEDIA
+     const postNoImage = {
+      content: postContent.content,
+      image: null,
+      created_at: new Date(),
+      updated_at: null,
+      user_id: req.user.userId,
+   };
+
+   //ENVOIE LA REQUETE AVEC MULTER ET LES VALEURS PAR DEFAUT
+   const publishPostNoMedia = await pool.query(queries.createPostQuery, [ postNoImage.content, postNoImage.image, postNoImage.created_at, postNoImage.updated_at, postNoImage.user_id]);
+   if (publishPostNoMedia) {
+      res.status(201).json(postNoImage);
+   } else {
+      res.status(400).json({ message: `New post without image not added` });
+   }
+  } else {
    const image = req.protocol + "://" + req.get("host") + "/images/" + req.file.filename;
-   console.log(image);
-   const postContent = JSON.parse(req.body.document);
    const post = {
       content: postContent.content,
       image: image,
@@ -25,13 +42,21 @@ exports.createPost = async (req, res, next) => {
       updated_at: null,
       user_id: req.user.userId,
    };
+
    //ENVOIE LA REQUETE AVEC MULTER ET LES VALEURS PAR DEFAUT
-   const publishPost = await pool.query(queries.createPostQuery, [ post.content, post.image, post.created_at, post.updated_at, post.user_id]) 
-      if (publishPost) {
-         res.status(201).json(post);
-      } else {
-         res.status(400).json({ message: `New post not added` });
-      }
+   const publishPost = await pool.query(queries.createPostQuery, [
+      post.content,
+      post.image,
+      post.created_at,
+      post.updated_at,
+      post.user_id,
+   ]);
+   if (publishPost) {
+      res.status(201).json(post);
+   } else {
+      res.status(400).json({ message: `New post not added` });
+   }
+  }
 };
 
 exports.updatePost = async (req, res, next) => {

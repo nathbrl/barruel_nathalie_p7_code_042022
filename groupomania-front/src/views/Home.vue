@@ -8,7 +8,7 @@
                   <textarea class="form-control" rows="2" v-model="post.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                   <div class="mar-top">
                      <input @change="selectFile" type="file" name="image" id="input-file">
-                     <a href="#"><i class="fa fa-paper-plane"></i><span class="ml-1" @click="createPost">Poster</span></a>
+                     <a href="#" @click="createPostWithNoImage"><i class="fa fa-paper-plane"></i><span class="ml-1">Publier</span></a>
                   </div>
                </form>
             </div>
@@ -27,22 +27,20 @@ import PostComponent from '../components/post.vue'
 export default {
    async mounted() {
       // POSTS
-         try {
-            const headers = getAuthenticationHeaders();
-            if (headers) {
-               const posts = await fetch("http://localhost:3001/api/post/",{  
-                  method: 'GET',
-                  headers
-               });
-               this.posts = await posts.json();
-            } else {
-               console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
-            }
-         } catch (error) {
-            console.log(error);
+      try {
+         const headers = getAuthenticationHeaders();
+         if (headers) {
+            const posts = await fetch("http://localhost:3001/api/post/", {
+               method: 'GET',
+               headers
+            });
+            this.posts = await posts.json();
+         } else {
+            console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
          }
-         // COMMENTS
-      
+      } catch (error) {
+         console.log(error);
+      }
    },
    data() {
       return {
@@ -64,9 +62,7 @@ export default {
                user_id: "",
             }
          ],
-         post: {
-
-         },
+         post: {},
          image: {},
       }
    },
@@ -76,32 +72,56 @@ export default {
    methods: {
       async getPosts() {
       },
-      async createPost(){
+      async createPostWithImage(){
          try {
             const headers = getAuthenticationHeaders();
             const postBody = JSON.stringify(this.post);
-            console.log(postBody);
+            debugger
             if (headers) {
                const formData = new FormData();
                formData.append('document', postBody);
                formData.append('image', this.image);
 
-               const newPost = await fetch("http://localhost:3001/api/post", 
-               {  method: "POST",
-                  headers,
-                  body: formData,  
+               if(formData) {
+                  const newPost = await fetch("http://localhost:3001/api/post", 
+                  {  method: "POST",
+                     headers,
+                     body: formData
+                  });
+
+                  console.log(newPost);
+                  this.posts.unshift(await newPost.json());
                }
-               );
-               console.log(newPost);
-               this.posts.unshift(await newPost.json());
-               console.log(this.newPost);
+            }
+         } catch (error) {
+            console.log(error);
+         }
+      },
+      async createPostWithNoImage(){
+         try {
+            const headers = getAuthenticationHeaders();
+            const postBody = JSON.stringify(this.post);
+            
+            if (headers) {
+               const formData = new FormData();
+               formData.append('document', postBody);
+
+               if(formData) {
+                  const newPost = await fetch("http://localhost:3001/api/post", 
+                  {  method: "POST",
+                     headers,
+                     body: formData
+                  });
+
+                  console.log(newPost);
+                  this.posts.unshift(await newPost.json());
+               }
             }
          } catch (error) {
             console.log(error);
          }
       },
       selectFile(event) {
-         debugger
          this.image = event.target.files[0];
       },
       
@@ -134,15 +154,10 @@ body {
    border-radius: 20px;
    margin: 20px 0px;
 }
-
-.rounded-circle{
-   width: 90px;
-   height: 90px;
-   border-radius: 50%;
-   border: solid 1px #fd2d01;
+.post-image{
+   width: 630px;
+   margin: 0 auto;
 }
-
-
 .text-right {
    display: flex;
    justify-content: center;
