@@ -5,6 +5,7 @@ const app = express();
 const path = require('path');
 const postRoute = require('./routes/post.routes');
 const userRoute = require('./routes/user.routes');
+const likeRoute = require('./routes/like.routes');
 
 app.use(helmet({crossOriginEmbedderPolicy: false}));
 //Paramétrage des headers
@@ -20,7 +21,8 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
-app.use('/api/post', postRoute);
-app.use('/api/user', userRoute);
+app.use('/api/post', postRoute);//pluriel
+app.use('/api/user', userRoute);//pluriel
+app.use('/api/post/:id/likes', likeRoute);
 
 module.exports = app;

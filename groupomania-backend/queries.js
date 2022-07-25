@@ -1,19 +1,19 @@
 /* USER QUERIES */
 const getUsersQuery = 'SELECT * FROM public."user"';
 
-const createUserQuery = 'INSERT INTO public."user" (pseudo, email, password, is_admin, profile_picture, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+const createUserQuery = 'INSERT INTO public."user" (pseudo, email, password, is_admin, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
 
 const checkExistingEmailQuery = 'SELECT s FROM public."user" s WHERE s.email = $1';
 
 const checkUserQuery = 'SELECT * FROM public."user" WHERE email = $1';
 
-const updateUserQuery = 'UPDATE public."user" SET pseudo = $1, profile_picture = $2, updated_at = $3 WHERE user_id = $4 RETURNING *';
+const updateUserQuery = 'UPDATE public."user" SET pseudo = $1, updated_at = $2 WHERE user_id = $3 RETURNING *';
 
 const deleteUserQuery =  'DELETE FROM public."user" WHERE user_id = $1';
 
 /* POSTS QUERIES */
 
-const allPostQuery = 'SELECT public.post.*, pseudo, profile_picture FROM public.post INNER JOIN public."user" ON public."user".user_id=public.post.user_id ORDER BY public.post.created_at DESC'; 
+const allPostQuery = 'SELECT public.post.*, pseudo FROM public.post INNER JOIN public."user" ON public."user".user_id=public.post.user_id ORDER BY public.post.created_at DESC'; 
 
 const createPostQuery = 'INSERT INTO public.post (content, image, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
 
@@ -23,7 +23,7 @@ const updatePostQuery = 'UPDATE public.post SET content = $1, image = $2, update
 
 const deletePostQuery = 'DELETE FROM public.post WHERE post_id = $1';
 
-const postQuery = 'SELECT public.post.*, pseudo, profile_picture FROM public.post';
+const postQuery = 'SELECT public.post.*, pseudo FROM public.post';
 
 /* LIKE QUERIES */
 

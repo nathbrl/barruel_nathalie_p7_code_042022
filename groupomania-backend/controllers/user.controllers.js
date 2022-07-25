@@ -20,30 +20,10 @@ async function createUser (user, res) {
     //Check if email already exists
     const checkEmail = await pool.query(queries.checkExistingEmailQuery, [user.email] );
     if (checkEmail.rowCount === 0) {
-        await pool.query(queries.createUserQuery, [user.pseudo, user.email, user.password, user.is_admin, user.profile_picture, user.created_at, user.updated_at]);
+        await pool.query(queries.createUserQuery, [user.pseudo, user.email, user.password, user.is_admin, user.created_at, user.updated_at]);
         res.status(201).send({message: 'user was successfully created'});
     } else {
         res.status(400).send({message:'user already exists'});
-    }
-}
-
-/**
- * UPDATE A USER
-*/
-exports.updateUser = async (req, res) => {
-    const id = req.params.id;
-
-    const userUpdated = {
-        pseudo: req.body.pseudo,
-        profile_picture: req.body.profile_picture,
-        updated_at: new Date()
-    }
-    console.log(userUpdated);
-    const update = await pool.query(queries.updateUserQuery, [userUpdated.pseudo, userUpdated.profile_picture, userUpdated.updated_at, id]);
-    if(!update) {
-        res.status(400).send({message: 'User couldn\'t be updated'});
-    } else {
-        res.status(200).send({message:'User was successfully updated'});
     }
 }
 
@@ -76,7 +56,6 @@ exports.signup = async (req, res) => {
             email: req.body.email,
             password: passwordHashed,
             is_admin: false,
-            profile_picture: req.body.profile_picture,
             created_at: new Date(),
             updated_at: null,          
         }, res);

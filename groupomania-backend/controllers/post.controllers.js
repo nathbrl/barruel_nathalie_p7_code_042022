@@ -15,8 +15,12 @@ exports.getAllPosts = async (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   //POST WITH MEDIA
   const postContent = JSON.parse(req.body.document);
+  const postImage = req.file;
+  
+  console.log(postImage);
 
-  if(req.body.image == undefined){
+  if(postImage == undefined){
+   console.log(postImage);
      //POST WITHOUT MEDIA
      const postNoImage = {
       content: postContent.content,
@@ -34,6 +38,7 @@ exports.createPost = async (req, res, next) => {
       res.status(400).json({ message: `New post without image not added` });
    }
   } else {
+   console.log(postImage);
    const image = req.protocol + "://" + req.get("host") + "/images/" + req.file.filename;
    const post = {
       content: postContent.content,
@@ -92,12 +97,12 @@ exports.updatePost = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
    const id = req.params.id;
-   const postId = await pool.query(queries.postIdQuery, [id]);
+   const rows = await pool.query(queries.postIdQuery, [id]);
    
-   if (!postId) {
+   if (!rows.rows.length) {
       res.status(400).json({ message: 'Aucun post ne correspond dans la base de donnée'});
    } else {
-      if(req.user.userId == postId.rows[0].user_id) {
+      if(req.user.userId == rows.rows[0].user_id) {
          const postDelete = await pool.query(queries.deletePostQuery, [id]);
          //console.log(postDelete);
          if(!postDelete) {

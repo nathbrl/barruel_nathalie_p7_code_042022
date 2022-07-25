@@ -7,8 +7,8 @@
                <form method="POST" action="/images" enctype="multipart/form-data">
                   <textarea class="form-control" rows="2" v-model="post.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                   <div class="mar-top">
-                     <input @change="selectFile" type="file" name="image" id="input-file">
-                     <a href="#" @click="createPostWithNoImage"><i class="fa fa-paper-plane"></i><span class="ml-1">Publier</span></a>
+                     <input type="file" @change="selectFile" name="image" id="input-file">
+                     <a href="#" @click="createPost"><i class="fa fa-paper-plane"></i><span class="ml-1">Publier</span></a>
                   </div>
                </form>
             </div>
@@ -16,13 +16,14 @@
       </div>
    </div>
    <div class="container mt-5" v-for="post in posts">
-      <post :post="post"></post>
+      <post :post="post" @delete="deletePost"></post>
    </div>
 </template>
 
 <script>
 import { getAuthenticationHeaders } from '../utils/utils'
 import PostComponent from '../components/post.vue'
+import {toRaw} from 'vue'
 
 export default {
    async mounted() {
@@ -53,15 +54,6 @@ export default {
                likes: ""
             }
          ],
-         comments: [
-            {
-               content: "",
-               created_at: "",
-               updated_at: "",
-               post_id: "",
-               user_id: "",
-            }
-         ],
          post: {},
          image: {},
       }
@@ -72,24 +64,33 @@ export default {
    methods: {
       async getPosts() {
       },
-      async createPostWithImage(){
+      async createPost(){
          try {
             const headers = getAuthenticationHeaders();
             const postBody = JSON.stringify(this.post);
+            const postImage = this.image;
             debugger
             if (headers) {
                const formData = new FormData();
                formData.append('document', postBody);
-               formData.append('image', this.image);
-
-               if(formData) {
+               if(postImage) {
+                  formData.append('image', postImage);
+                  console.log(formData.postImage);
                   const newPost = await fetch("http://localhost:3001/api/post", 
                   {  method: "POST",
                      headers,
                      body: formData
                   });
+                  this.posts.unshift(await newPost.json());
 
-                  console.log(newPost);
+               } else {
+                  console.log(postImage);
+                  const newPost = await fetch("http://localhost:3001/api/post", 
+                  {  method: "POST",
+                     headers,
+                     body: formData.postBody
+                  });
+                  console.log(formData.postBody);
                   this.posts.unshift(await newPost.json());
                }
             }
@@ -97,7 +98,12 @@ export default {
             console.log(error);
          }
       },
-      async createPostWithNoImage(){
+      deletePost(postId){
+         
+         this.posts = toRaw(this.posts).filter((post) => { 
+         return post.post_id !== postId})
+      },
+      /*async createPostWithNoImage(){
          try {
             const headers = getAuthenticationHeaders();
             const postBody = JSON.stringify(this.post);
@@ -120,11 +126,10 @@ export default {
          } catch (error) {
             console.log(error);
          }
-      },
-      selectFile(event) {
+      },*/
+      selectFile() {
          this.image = event.target.files[0];
       },
-      
    }
 }
 </script>

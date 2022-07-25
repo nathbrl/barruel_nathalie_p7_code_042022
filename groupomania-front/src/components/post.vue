@@ -69,6 +69,7 @@ export default {
                     method: 'DELETE',
                     headers: headers,
                 })
+                this.$emit("delete", postId);//envoie un évent vers le parent
                 console.log(post);
             } catch (error) {
                 console.log(error);
