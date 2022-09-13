@@ -1,22 +1,47 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-
 <template>
   <header>
       <img alt="Vue logo" class="logo" src="@/assets/icon-above-font.png" width="125" height="125" />
 
       <div class="wrapper">
          <h1>Bienvenue sur groupomania</h1>
-         <nav>
-         <RouterLink to="/">S'INSCRIRE</RouterLink>
-         <RouterLink to="/login">SE CONNECTER</RouterLink>
+         <nav v-if="isLogged == false">
+            <RouterLink to="/">S'INSCRIRE</RouterLink>
+            <RouterLink to="/login">SE CONNECTER</RouterLink>
+         </nav>
+         <nav v-else>
+            <RouterLink to="/login" @click="logout()">SE DÉCONNECTER</RouterLink>
          </nav>
       </div>
   </header>
 
-  <RouterView />
+  <RouterView @isLogged="isLogged = true" />
 </template>
+
+<script>
+   import { RouterLink, RouterView } from 'vue-router'
+
+   export default {
+      data() {
+         return {
+            isLogged: true,
+         }  
+      },
+      beforeMount(){
+         if (localStorage.getItem('token')) {
+               this.isLogged = true;
+            } else {
+               this.isLogged = false;
+            }
+      },
+      methods: {
+         logout(){
+            this.isLogged = false;
+            localStorage.clear();
+         }
+      }
+   }
+</script>
+   
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');

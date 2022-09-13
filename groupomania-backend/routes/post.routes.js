@@ -10,4 +10,7 @@ router.post("/", auth, multer, postCtrl.createPost);
 router.put('/:id', auth, multer, postCtrl.updatePost);
 router.delete('/:id', auth, postCtrl.deletePost);
 
+/* LIKES*/
+router.post('/:id/like', auth, postCtrl.likePost);
+
 module.exports = router;

@@ -20,14 +20,21 @@
                 </div>
                 <div class="bg-white">
                     <div class="d-flex flex-row fs-12">
-                        <div class="like p-2 cursor" id="like" @click="likePost(post.post_id)">
-                            <a><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Likes</span><span class="ml-1, like-counter">0</span></a>
+                        <div class="like p-2 cursor" id="like" @click="likePost(post)">
+                            <a><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Likes</span> {{ post.numberLikes }}<span class="ml-1, like-counter"></span></a>
                         </div>
                         <div class="like p-2 cursor">
                             <a @click="deletePost(post.post_id)"><i class="fa fa-trash"></i><span class="ml-1">Supprimer</span></a>
                         </div>
-                        <div class="like p-2 cursor" @click="updatePost(post.post_id)">
-                            <a><i class="fa fa-pen"></i><span class="ml-1">Modifier</span></a>
+                        <div class="like p-2 cursor">
+                            <a  @click="updatePost(post.post_id)" v-if="isUpdating == false"><i class="fa fa-pen"></i><span class="ml-1">Modification</span></a>
+                            <form v-else method="PUT" enctype="multipart/form-data"> <!-- action="/images"-->
+                                <textarea class="form-control" rows="2" v-model="newText.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
+                                <div class="mar-top">
+                                    <input type="file" @change="selectFile" name="image" id="input-file">
+                                    <button @click="postUpdated"><i class="fa fa-paper-plane"></i><span class="ml-1">Modifier</span></button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -45,15 +52,9 @@ export default {
     },
     data() {
         return {
-            comments: [
-                {
-                    content: "",
-                    created_at: "",
-                    updated_at: "",
-                    post_id: "",
-                    user_id: "",
-                }
-            ],
+            isUpdating: false,
+            newText: {},
+            newImage: {},
         }
     },
     methods: {
@@ -62,53 +63,72 @@ export default {
             return myDate
         },
         async deletePost(postId) {
-            console.log(postId);
             try {
                 const headers = getAuthenticationHeaders();
                 const post = await fetch(`http://localhost:3001/api/post/${postId}`, {
                     method: 'DELETE',
                     headers: headers,
                 })
-                this.$emit("delete", postId);//envoie un évent vers le parent
-                console.log(post);
+                this.$emit("delete", postId);
             } catch (error) {
                 console.log(error);
             }
         },
-        async updatePost(postId) {
-            console.log(postId);
+        selectFile() {
+            this.newImage = event.target.files[0];
+        },
+        async updatePost(post) {
+            this.isUpdating = !this.isUpdating;
+        },
+        async postUpdated(){
+            debugger
             try {
-                //éléments à modifier
-                console.log(document.querySelector('.comment-text'));
-                console.log(document.querySelector('.mt-2 img'));
-                console.log(document.querySelector('.date'));
-
-                let text = document.querySelector('.comment-text');
-                let image = document.querySelector('.mt-2 img');
-                let date = document.querySelector('.date');
-
                 const headers = getAuthenticationHeaders();
-                const post = await fetch(`http://localhost:3001/api/post/${postId}`, {
-                    method: 'PUT',
+                const postBody = JSON.stringify(this.newText);
+                console.log(postBody);
+                const postImage = this.newImage;
+                console.log(postImage);
+                
+                if (headers) {
+                    const formData = new FormData();
+                    formData.append('document', postBody);
+
+                    if(postImage) {
+                        formData.append('image', postImage);
+                        const post = await fetch(`http://localhost:3001/api/post/${postId}`, {
+                            method: 'PUT',
+                            headers: headers,
+                            body: formData,
+                        });
+                        console.log(post);
+                        this.posts.unshift(await post.json());
+                        alert('Post modifié avec succès');
+
+                    } else {
+                        const post = await fetch(`http://localhost:3001/api/post/${postId}`, {
+                            method: 'PUT',
+                            headers: headers,
+                            body: formData.postBody,
+                        });
+                        console.log(post);
+                        this.posts.unshift(await post.json());
+                        alert('Post modifié avec succès');
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async likePost (post) {
+            const headers = getAuthenticationHeaders();
+            const like = await fetch(`http://localhost:3001/api/post/${post.post_id}/like`, {
+                    method: 'POST',
                     headers: headers,
                     body: ""
-                })
-                console.log(post);
-            } catch (error) {
-                console.log(error);
-            }
-            
-        console.log(updatePost());
-        },
-        async likePost(postId) {
-            console.log(postId);
-            let like = document.querySelector('#like');
-            let likeCounter = document.querySelector('.like-counter').innerHTML;
-            like.addEventListener('click', (e) => {
-                likeCounter++;
-                console.log(likeCounter);
-            })
-            console.log(like);
+                });
+                const likes = await like.json();
+
+                post.numberLikes = likes.likes;
         }
     }
 }

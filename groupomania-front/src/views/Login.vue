@@ -49,14 +49,16 @@
                if (response.status == 401) {
                   this.errorMsg = userData.error;
                } else {
-                  console.log('Félicitation ! Vous êtes connecté !');
                   const tokenStored = localStorage.setItem('token', userToken);
+                  this.$emit('isLogged');
                }
                this.$router.push({name: 'home'})
             } catch(error) {
                this.errorMsg = error.error;
+               console.log(error);
             }
-         }
+         },
+
       }
    };
 </script>

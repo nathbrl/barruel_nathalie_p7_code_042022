@@ -37,7 +37,7 @@ export default {
             });
             this.posts = await posts.json();
          } else {
-            console.log("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
+            alert("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
          }
       } catch (error) {
          console.log(error);
@@ -45,15 +45,7 @@ export default {
    },
    data() {
       return {
-         posts: [
-            {
-               content: "",
-               image: "",
-               created_at: "",
-               updated_at: "",
-               likes: ""
-            }
-         ],
+         posts: [],
          post: {},
          image: {},
       }
@@ -69,28 +61,26 @@ export default {
             const headers = getAuthenticationHeaders();
             const postBody = JSON.stringify(this.post);
             const postImage = this.image;
-            debugger
+            
             if (headers) {
                const formData = new FormData();
                formData.append('document', postBody);
                if(postImage) {
                   formData.append('image', postImage);
-                  console.log(formData.postImage);
                   const newPost = await fetch("http://localhost:3001/api/post", 
                   {  method: "POST",
                      headers,
                      body: formData
                   });
                   this.posts.unshift(await newPost.json());
+                  alert('Nouveau post crée avec succès');
 
                } else {
-                  console.log(postImage);
                   const newPost = await fetch("http://localhost:3001/api/post", 
                   {  method: "POST",
                      headers,
                      body: formData.postBody
                   });
-                  console.log(formData.postBody);
                   this.posts.unshift(await newPost.json());
                }
             }
@@ -99,34 +89,9 @@ export default {
          }
       },
       deletePost(postId){
-         
-         this.posts = toRaw(this.posts).filter((post) => { 
+         this.posts = toRaw(this.posts).filter((post) => {
          return post.post_id !== postId})
       },
-      /*async createPostWithNoImage(){
-         try {
-            const headers = getAuthenticationHeaders();
-            const postBody = JSON.stringify(this.post);
-            
-            if (headers) {
-               const formData = new FormData();
-               formData.append('document', postBody);
-
-               if(formData) {
-                  const newPost = await fetch("http://localhost:3001/api/post", 
-                  {  method: "POST",
-                     headers,
-                     body: formData
-                  });
-
-                  console.log(newPost);
-                  this.posts.unshift(await newPost.json());
-               }
-            }
-         } catch (error) {
-            console.log(error);
-         }
-      },*/
       selectFile() {
          this.image = event.target.files[0];
       },

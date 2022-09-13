@@ -24,7 +24,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
@@ -35,30 +35,13 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: comment; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.comment (
-    comment_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    content character varying(300) NOT NULL,
-    created_at date NOT NULL,
-    updated_at date,
-    post_id uuid NOT NULL,
-    user_id uuid NOT NULL
-);
-
-
-ALTER TABLE public.comment OWNER TO postgres;
-
---
 -- Name: like; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public."like" (
     like_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     post_id uuid NOT NULL,
-    user_id uuid NOT NULL,
-    comment_id uuid NOT NULL
+    user_id uuid NOT NULL
 );
 
 
@@ -71,7 +54,7 @@ ALTER TABLE public."like" OWNER TO postgres;
 CREATE TABLE public.post (
     post_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     content character varying(300) NOT NULL,
-    atachment character varying(300),
+    image character varying(300),
     created_at date NOT NULL,
     updated_at date,
     user_id uuid NOT NULL
@@ -85,7 +68,7 @@ ALTER TABLE public.post OWNER TO postgres;
 --
 
 CREATE TABLE public."user" (
-    user_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    user_id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
     pseudo character varying(150) NOT NULL,
     email character varying(250) NOT NULL,
     password character varying(300) NOT NULL,
@@ -99,18 +82,14 @@ CREATE TABLE public."user" (
 ALTER TABLE public."user" OWNER TO postgres;
 
 --
--- Data for Name: comment; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.comment (comment_id, content, created_at, updated_at, post_id, user_id) FROM stdin;
-\.
-
-
---
 -- Data for Name: like; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."like" (like_id, post_id, user_id, comment_id) FROM stdin;
+COPY public."like" (like_id, post_id, user_id) FROM stdin;
+d0c37e8f-029f-49be-9413-0ff3b6db93d0    eb882192-2844-4fc2-94a2-7a0dd98db9d4    bab146fc-127c-11ed-9a72-00d8612e53a4
+1167f54e-7f5a-4a88-9f07-efe3bcb2b32e    dac5ed21-74ae-401b-8572-3782f7fcea73    bab146fc-127c-11ed-9a72-00d8612e53a4
+8d0790f5-bc25-4f54-9c53-5fb58981085f    f2762dae-2e09-4409-a7fb-496e2a70ceed    bab146fc-127c-11ed-9a72-00d8612e53a4
+41eed2e8-8af1-44a2-859c-97c159b2c3f3    b80a7691-a697-4c4e-b47d-a9276d695060    bab146fc-127c-11ed-9a72-00d8612e53a4
 \.
 
 
@@ -118,12 +97,14 @@ COPY public."like" (like_id, post_id, user_id, comment_id) FROM stdin;
 -- Data for Name: post; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.post (post_id, content, atachment, created_at, updated_at, user_id) FROM stdin;
-bdffc546-0d96-4cda-9d71-5cd8391243c8	Ceci est un meme	https://www.journaldunet.fr/business/dictionnaire-du-marketing/1495775-meme-definition-traduction-exemples/	2022-06-08	\N	a0885037-f649-4eac-8d2a-f33466bcf5cc
-b9f69325-1b0c-4c91-b58a-eb82dc635acf	Je suis une licorne	https://cdn.shopify.com/s/files/1/0033/9532/1901/articles/Licorne_arc_en_ciel_1600x.jpg?v=1571597769	2021-06-05	\N	48c10b9e-ff4e-4867-b7bc-6cba1d0f493b
-3195968a-d9a6-4c24-8a43-62b8d36f70f7	J'aime la montagne	https://www.artmajeur.com/medias/standard/m/i/michelderuyck/artwork/9650860_montagne-enneigee.jpg	2022-09-03	\N	0da19134-0b77-42e2-8e50-a07c4bb56419
-e0ab39d9-1e98-426f-9842-cd6854a34e89	Le petit poucet	http://www.infobassin.com/wp-content/uploads/2018/05/Daney-Le-petit-Poucet-273x300.jpg	2022-06-20	\N	8270f9d4-de30-4ae5-a66a-e2229ee993f8
-d67e8633-1d14-4d1e-ac75-263f29e60f8a	Je suis Franckie !	https://e-nautia.com/francois.durand/disk/Profil/avatar-gratuit.png	2022-06-21	2022-06-21	0da19134-0b77-42e2-8e50-a07c4bb56419
+COPY public.post (post_id, content, image, created_at, updated_at, user_id) FROM stdin;
+f2762dae-2e09-4409-a7fb-496e2a70ceed    J'ai Ã©tÃ© en NorvÃ¨ge pendant les vacances prÃ©cÃ©dentes regardez ce que j'y ai vu ! :o        http://localhost:3001/images/1662717497585.jpg  2022-09-09      \N      44c2229f-b69d-4d7c-89c2-2d25604f29b5
+b80a7691-a697-4c4e-b47d-a9276d695060    Je dessine depuis pas mal d'annÃ©es maintenant voici une de mes Å"uvres ! Soyez indulgents.     http://localhost:3001/images/1662717664758.jpg  2022-09-09      \N      1276e401-9676-4ab6-92e2-57b35a2ce506
+eb882192-2844-4fc2-94a2-7a0dd98db9d4    Moi quand je corrige un bug et qu'il y en a 30 autres qui apparaissent haha !  http://localhost:3001/images/1663001183157.png   2022-09-12      \N      1276e401-9676-4ab6-92e2-57b35a2ce506
+dac5ed21-74ae-401b-8572-3782f7fcea73    Besoin d'une pause cafÃ© !      http://localhost:3001/images/1663001402487.webp
+2022-09-12      \N      bab146fc-127c-11ed-9a72-00d8612e53a4
+55aaaf0f-3206-4c6b-a3ec-1e057390dccd    Mon mood pendant les vacances   http://localhost:3001/images/1663001648378.png 2022-09-12       \N      bab146fc-127c-11ed-9a72-00d8612e53a4
+51e05509-40a8-45fa-b028-3d15010ac92c    rien de mieux que des memes pour se changer les idÃ©es  http://localhost:3001/images/1663003653091.jpg  2022-09-12      \N      52fdd7cb-3116-4132-8e3f-a50d5e030fa7
 \.
 
 
@@ -132,21 +113,11 @@ d67e8633-1d14-4d1e-ac75-263f29e60f8a	Je suis Franckie !	https://e-nautia.com/fra
 --
 
 COPY public."user" (user_id, pseudo, email, password, is_admin, profile_picture, created_at, updated_at) FROM stdin;
-4800ec5c-b616-4493-8084-cfcae4b56a55	toto	toto@test.fr	$2b$10$N5pQ5vT3He.HWK2Z/RPiOunEK251.kvJWMTQlh9KIeTztlHKAIEPy	f	\N	2022-06-07	\N
-a0885037-f649-4eac-8d2a-f33466bcf5cc	tata	tata@test.fr	$2b$10$3yP9ieF7s.F3YOiu3aWgTundNG2eMfnnDYCdYQVBcnlnvhRS.hjqK	f	\N	2022-06-07	\N
-0da19134-0b77-42e2-8e50-a07c4bb56419	titi	titi@test.fr	$2b$10$nBtn4T7.t7HlIyA0lz0TsepF4Ny41JI4BwwpP3JiIIFndB/V6pXVK	f	\N	2022-06-07	\N
-48c10b9e-ff4e-4867-b7bc-6cba1d0f493b	tutu	tutu@test.fr	$2b$10$Q.kuplsA6MDR4APPJXiWWuOeD24Ct8FEA81jMNhbRF/sDI6dtcqEe	f	\N	2022-06-08	\N
-8270f9d4-de30-4ae5-a66a-e2229ee993f8	baba	baba@test.fr	$2b$10$5Uo0KBP6KK1.xwElrHqGkuGMcaF6I7r8kikntcXW//Zu1OChWSYYi	f	\N	2022-06-20	\N
-be26c6d6-6f45-4cd0-9f2b-677b600d725e	saucisson sec	bibi@test.fr	$2b$10$gLdiJoYSR/HZOonVolBeUOKcpTjUT3HKkgk9PBZgp1lZivIQ94M3m	f	https://cdn.radiofrance.fr/s3/cruiser-production/2019/12/c3c28d4a-f776-4924-99cb-b53a4023e247/1200x680_avatar.jpg	2022-06-20	2022-06-21
+1276e401-9676-4ab6-92e2-57b35a2ce506    titi    titi@test.fr    $2b$10$1Kh6ICaDjGAyCp79DjMmXOBQE1HMZDEiSkqHl8WXFL9SfkIYd/Heq    f       \N      2022-06-12      \N
+bab146fc-127c-11ed-9a72-00d8612e53a4    bibi    bibi@test.fr    $2b$10$hwHYZ74zDrLn1RqH3L84t.CjaubyBrFFQlgzIwLQArJFs.Xu7PABW    f       \N      2022-08-02      \N
+44c2229f-b69d-4d7c-89c2-2d25604f29b5    tata    tata@test.fr    $2b$10$t6VuCEWwomYe0JLmu79WkOw8g06ln6HJg8.zIhiAgXs0D1JBXyLz6    f       \N      2022-06-06      \N
+52fdd7cb-3116-4132-8e3f-a50d5e030fa7    toto    toto@test.fr    $2b$10$biWJbBOH2DjcQsvHWCQ98.cna4Dp9Oi9az4ATvbZZlA6TB8/jl5wS    t       \N      2022-06-06      \N
 \.
-
-
---
--- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT comment_pkey PRIMARY KEY (comment_id);
 
 
 --
@@ -162,7 +133,7 @@ ALTER TABLE ONLY public."user"
 --
 
 ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT like_pkey PRIMARY KEY (like_id);
+    ADD CONSTRAINT like_pkey PRIMARY KEY (like_id) INCLUDE (like_id);
 
 
 --
@@ -170,7 +141,7 @@ ALTER TABLE ONLY public."like"
 --
 
 ALTER TABLE ONLY public.post
-    ADD CONSTRAINT post_pkey PRIMARY KEY (post_id);
+    ADD CONSTRAINT post_pkey PRIMARY KEY (post_id) INCLUDE (post_id);
 
 
 --
@@ -186,14 +157,7 @@ ALTER TABLE ONLY public."user"
 --
 
 ALTER TABLE ONLY public."user"
-    ADD CONSTRAINT user_pkey PRIMARY KEY (user_id);
-
-
---
--- Name: fki_comment_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX fki_comment_id ON public."like" USING btree (comment_id);
+    ADD CONSTRAINT user_pkey PRIMARY KEY (user_id) INCLUDE (user_id);
 
 
 --
@@ -211,35 +175,11 @@ CREATE INDEX fki_user_id ON public.post USING btree (user_id);
 
 
 --
--- Name: like comment_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT comment_id FOREIGN KEY (comment_id) REFERENCES public.comment(comment_id) ON DELETE CASCADE;
-
-
---
--- Name: comment post_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id) ON DELETE CASCADE;
-
-
---
 -- Name: like post_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id) ON DELETE CASCADE;
-
-
---
--- Name: comment user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE;
+    ADD CONSTRAINT post_id FOREIGN KEY (post_id) REFERENCES public.post(post_id) ON DELETE CASCADE NOT VALID;
 
 
 --
@@ -247,7 +187,7 @@ ALTER TABLE ONLY public.comment
 --
 
 ALTER TABLE ONLY public."like"
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE;
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE NOT VALID;
 
 
 --
@@ -255,7 +195,7 @@ ALTER TABLE ONLY public."like"
 --
 
 ALTER TABLE ONLY public.post
-    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE;
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."user"(user_id) ON DELETE CASCADE NOT VALID;
 
 
 --

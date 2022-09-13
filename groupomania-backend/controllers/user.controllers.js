@@ -21,9 +21,9 @@ async function createUser (user, res) {
     const checkEmail = await pool.query(queries.checkExistingEmailQuery, [user.email] );
     if (checkEmail.rowCount === 0) {
         await pool.query(queries.createUserQuery, [user.pseudo, user.email, user.password, user.is_admin, user.created_at, user.updated_at]);
-        res.status(201).send({message: 'user was successfully created'});
+        res.status(201).send({message: 'Nouvel utilisateur crée'});
     } else {
-        res.status(400).send({message:'user already exists'});
+        res.status(400).send({message:'Cet utilisateur existe déjà'});
     }
 }
 
@@ -35,9 +35,9 @@ exports.deleteUser = async (user, res) => {
     const id = user.params.id;
     await pool.query(queries.deleteUserQuery, [id]);
     if (!id) {
-        res.status(400).send({message: 'User doesn\'t exist, deletion impossible'});
+        res.status(400).send({message: 'Impossible de supprimer cet utilisateur, il n\'existe pas'});
     } else {
-        res.status(200).send({message: 'User was successfully deleted'});
+        res.status(200).send({message: 'Utilisateur supprimé'});
     } 
 }
 
@@ -51,16 +51,16 @@ exports.signup = async (req, res) => {
         }
         const passwordHashed = await bcrypt.hash(req.body.password, 10)
         createUser ({
-            //user_id: uuidv4(), // à retirer + dans la requête 
             pseudo: req.body.pseudo,
             email: req.body.email,
             password: passwordHashed,
-            is_admin: false,
+            admin: false,
             created_at: new Date(),
             updated_at: null,          
         }, res);
     }
     catch(error) {
+        console.log(error);
         res.status(400).json({ message: error });
     }
 }
@@ -72,29 +72,32 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
     const result = await pool.query(queries.checkUserQuery, [req.body.email]);
         const user = result.rows[0];
+        const admin = result.rows[0].is_admin;
         if (user && !user.email) {
-            return res.status(401).json({ error: "This email doesn't exists, signup up first" });
+            return res.status(401).json({ error: "Cet email n'existe pas, inscrivez-vous d'abord" });
         } else {
             bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
                     if (!valid) {
-                        return res.status(401).json({ error: 'The password is incorrect'});
+                        return res.status(401).json({ message: 'Mot de passe incorect'});
                     }
                     res.status(200).json({
                         pseudo: user.pseudo,
                         email: user.email,
                         password: undefined,
                         token: jwt.sign(
-                            { userId: user.user_id, 
-                            is_admin: true,
+                            { userId: user.user_id,
                             pseudo: user.pseudo,
+                            admin: admin, 
                             email: user.email },
                             process.env.RANDOM_TOKEN_SECRET_KEY,
-                            //return is_admin ici
-                            { expiresIn: '24h' }
+                            { expiresIn: '24h' },
                         )
                     });
                 })
-                .catch(error => res.status(500).json({ message: "Authentication error" }));
-    }
+                .catch(error =>{
+                    console.log(error); 
+                    res.status(500).json({ message: "Erreur d'authentification" })
+                });
+        }
 }

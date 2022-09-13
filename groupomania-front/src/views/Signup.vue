@@ -46,12 +46,10 @@ export default {
                body: JSON.stringify({ pseudo: this.pseudo, password: this.password, email: this.email})
             })
             const userData = await response.json();
-            console.log(userData);
 
             if (response.status == 400) {
                this.errorMsg = userData.message;
             } else {
-               console.log('Félicitations votre compte a bien été créé');
                this.$router.push({name: 'login'})
             }
          } catch(error) {

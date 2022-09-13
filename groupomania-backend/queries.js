@@ -27,6 +27,14 @@ const postQuery = 'SELECT public.post.*, pseudo FROM public.post';
 
 /* LIKE QUERIES */
 
+const userLikeQuery = 'SELECT count(*) FROM public."like" WHERE post_id = $1 AND user_id = $2';
+
+const totalLikeQuery = 'SELECT count(*) FROM public."like" WHERE post_id = $1';
+
+const addLikeQuery = 'INSERT INTO public."like" (post_id, user_id) VALUES ($1, $2) RETURNING *';
+
+const deleteLikeQuery = 'DELETE FROM public."like" WHERE post_id = $1';
+
 module.exports = {
     getUsersQuery,
     createUserQuery,
@@ -41,4 +49,9 @@ module.exports = {
     updatePostQuery,
     deletePostQuery,
     postQuery,
+
+    userLikeQuery,
+    totalLikeQuery,
+    addLikeQuery,
+    deleteLikeQuery,
 };
