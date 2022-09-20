@@ -10,8 +10,8 @@
                   <input type="text" class="text" name="email" placeholder="email" v-model="email">
                   <input type="password" class="text" name="password" placeholder="mot de passe" v-model="password">
                   <div>
-                     <button class="login-button" @click= "click">Je me connecte</button>
-                     <span v-if="errorMsg"> {{ errorMsg }}</span>
+                     <button class="login-button" @click= "login">Je me connecte</button>
+                     <span id="msg" v-if="errorMsg"> {{ errorMsg }}</span>
                   </div> 
                </form> 
             </div> 
@@ -31,7 +31,7 @@
          }
       },
       methods: {
-         async click(e) {
+         async login(e) {
             e.preventDefault();
             try {
                const response = await fetch('http://localhost:3001/api/user/login', 
@@ -47,15 +47,14 @@
                const userToken = userData.token;
 
                if (response.status == 401) {
-                  this.errorMsg = userData.error;
+                  this.errorMsg = userData.message;
                } else {
                   const tokenStored = localStorage.setItem('token', userToken);
                   this.$emit('isLogged');
+                  this.$router.push({name: 'home'})
                }
-               this.$router.push({name: 'home'})
             } catch(error) {
                this.errorMsg = error.error;
-               console.log(error);
             }
          },
 
@@ -161,7 +160,7 @@ input::placeholder{
 .text{
    color: #fff;
 }
-span {
+span#msg {
    color: #fd2f01;
 }
 </style>

@@ -48,7 +48,10 @@ exports.signup = async (req, res) => {
     try {
         if (req.body.password === undefined || req.body.password == '') {
             return res.status(400).json({ message: 'Mot de passe non défini'});
-        }
+        };
+        if (req.body.pseudo === undefined || req.body.pseudo == '' ) {
+            return res.status(400).json({ message: 'Renseignez un pseudo afin de créer votre compte'});
+        };
         const passwordHashed = await bcrypt.hash(req.body.password, 10)
         createUser ({
             pseudo: req.body.pseudo,
@@ -71,33 +74,36 @@ exports.signup = async (req, res) => {
 */
 exports.login = async (req, res) => {
     const result = await pool.query(queries.checkUserQuery, [req.body.email]);
-        const user = result.rows[0];
-        const admin = result.rows[0].is_admin;
-        if (user && !user.email) {
-            return res.status(401).json({ error: "Cet email n'existe pas, inscrivez-vous d'abord" });
-        } else {
-            bcrypt.compare(req.body.password, user.password)
-                .then(valid => {
-                    if (!valid) {
-                        return res.status(401).json({ message: 'Mot de passe incorect'});
-                    }
-                    res.status(200).json({
-                        pseudo: user.pseudo,
-                        email: user.email,
-                        password: undefined,
-                        token: jwt.sign(
-                            { userId: user.user_id,
-                            pseudo: user.pseudo,
-                            admin: admin, 
-                            email: user.email },
-                            process.env.RANDOM_TOKEN_SECRET_KEY,
-                            { expiresIn: '24h' },
-                        )
-                    });
-                })
-                .catch(error =>{
-                    console.log(error); 
-                    res.status(500).json({ message: "Erreur d'authentification" })
-                });
+    const checkEmail = await pool.query(queries.checkExistingEmailQuery, [req.body.email] );
+    const user = result.rows[0];
+    if (checkEmail.rowCount === 0) {
+        if (!result.email && result.email === undefined) {
+            return res.status(401).json({ message: "Cet email n'existe pas, inscrivez-vous d'abord" });
         }
+    } else {
+        const admin = user.is_admin;
+        bcrypt.compare(req.body.password, user.password)
+            .then(valid => {
+                if (!valid) {
+                    return res.status(401).json({ message: 'Mot de passe incorect'});
+                }
+                res.status(200).json({
+                    pseudo: user.pseudo,
+                    email: user.email,
+                    password: undefined,
+                    token: jwt.sign(
+                        { userId: user.user_id,
+                        pseudo: user.pseudo,
+                        admin: admin, 
+                        email: user.email },
+                        process.env.RANDOM_TOKEN_SECRET_KEY,
+                        { expiresIn: '24h' },
+                    )
+                });
+            })
+            .catch(error =>{
+                console.log(error); 
+                res.status(500).json({ message: "Erreur d'authentification" })
+            });
+    }
 }

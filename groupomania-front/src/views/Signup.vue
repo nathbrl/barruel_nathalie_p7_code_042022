@@ -12,8 +12,8 @@
                   <label for="pseudo" class="text">Choisissez un mot de passe</label>
                   <input type="password" name="password" placeholder="mot de passe" v-model="password">
                   <div>
-                     <button class="signup-button" @click="click">Je m'inscris</button>
-                     <span v-if="errorMsg"> {{ errorMsg }}</span>
+                     <button class="signup-button" @click="signup">Je m'inscris</button>
+                     <span id="msg" v-if="errorMsg"> {{ errorMsg }}</span>
                   </div> 
                </form> 
             </div> 
@@ -34,7 +34,7 @@ export default {
       }
    },
    methods: {
-      async click(e) {
+      async signup(e) {
          e.preventDefault()
          try {
             const response = await fetch('http://localhost:3001/api/user/signup', 
@@ -157,7 +157,7 @@ input::placeholder{
 .text{
    color: #fff;
 }
-span {
+span#msg {
    color: #fd2f01;
 }
 </style>

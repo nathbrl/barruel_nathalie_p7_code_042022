@@ -8,7 +8,7 @@ const auth = require('../middlewares/auth.middlewares');
 
 router.post('/signup', checkPassword, checkEmail, userCrtl.signup);
 router.post('/login',  limiter, userCrtl.login);
-router.get('/', userCrtl.getUsers); // à supprimer plus tard
-router.delete('/:id', auth, userCrtl.deleteUser);
+router.get('/', userCrtl.getUsers); // à supprimer
+router.delete('/:id', auth, userCrtl.deleteUser); // à supprimer
 
 module.exports = router;

@@ -27,12 +27,12 @@
                             <a @click="deletePost(post.post_id)"><i class="fa fa-trash"></i><span class="ml-1">Supprimer</span></a>
                         </div>
                         <div class="like p-2 cursor">
-                            <a  @click="updatePost(post.post_id)" v-if="isUpdating == false"><i class="fa fa-pen"></i><span class="ml-1">Modification</span></a>
-                            <form v-else method="PUT" enctype="multipart/form-data"> <!-- action="/images"-->
+                            <a  @click="updatePost(post.post_id)" v-if="isUpdating == false "><i class="fa fa-pen"></i><span class="ml-1">Modification</span></a>
+                            <form v-else method="PUT" enctype="multipart/form-data">
                                 <textarea class="form-control" rows="2" v-model="newText.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                                 <div class="mar-top">
                                     <input type="file" @change="selectFile" name="image" id="input-file">
-                                    <button @click="postUpdated"><i class="fa fa-paper-plane"></i><span class="ml-1">Modifier</span></button>
+                                    <button @click="postUpdated(post.post_id)"><i class="fa fa-paper-plane"></i><span class="ml-1">Modifier</span></button>
                                 </div>
                             </form>
                         </div>
@@ -55,6 +55,7 @@ export default {
             isUpdating: false,
             newText: {},
             newImage: {},
+            errorMsg: "",
         }
     },
     methods: {
@@ -65,11 +66,20 @@ export default {
         async deletePost(postId) {
             try {
                 const headers = getAuthenticationHeaders();
-                const post = await fetch(`http://localhost:3001/api/post/${postId}`, {
-                    method: 'DELETE',
-                    headers: headers,
-                })
-                this.$emit("delete", postId);
+                
+                    const post = await fetch(`http://localhost:3001/api/posts/${postId}`, {
+                        method: 'DELETE',
+                        headers: headers,
+                    })
+                    const userData = await post.json();
+                    this.errorMsg = userData.message;
+                    
+                    if (post.status == 401) {
+                        alert(this.errorMsg);
+                    } else {
+                        this.$emit("delete", postId);
+                        alert(this.errorMsg);
+                    }
             } catch (error) {
                 console.log(error);
             }
@@ -80,40 +90,53 @@ export default {
         async updatePost(post) {
             this.isUpdating = !this.isUpdating;
         },
-        async postUpdated(){
-            debugger
+        async postUpdated(postId){
             try {
                 const headers = getAuthenticationHeaders();
                 const postBody = JSON.stringify(this.newText);
-                console.log(postBody);
                 const postImage = this.newImage;
-                console.log(postImage);
-                
                 if (headers) {
                     const formData = new FormData();
                     formData.append('document', postBody);
-
                     if(postImage) {
+                        console.log('if');
                         formData.append('image', postImage);
-                        const post = await fetch(`http://localhost:3001/api/post/${postId}`, {
-                            method: 'PUT',
+                        const post = await fetch(`http://localhost:3001/api/posts/${postId}`, 
+                        {   method: 'PUT',
                             headers: headers,
                             body: formData,
                         });
-                        console.log(post);
-                        this.posts.unshift(await post.json());
-                        alert('Post modifié avec succès');
-
+                        const postData = await post.json();
+                        console.log(postData);
+                        console.log(postData.message);
+                        this.errorMsg = postData.message;
+                        if (post.status == 401) {
+                            console.log('if 2');
+                            alert(this.errorMsg);
+                        } else {
+                            console.log('else 2');
+                            this.post.unshift(await post.json());
+                            console.log('Post avec image modifié avec succès');
+                        }
                     } else {
-                        const post = await fetch(`http://localhost:3001/api/post/${postId}`, {
+                        console.log('else');
+                        const post = await fetch(`http://localhost:3001/api/posts/${postId}`, {
                             method: 'PUT',
                             headers: headers,
                             body: formData.postBody,
                         });
-                        console.log(post);
-                        this.posts.unshift(await post.json());
-                        alert('Post modifié avec succès');
+                        const postData = await post.json();
+                        console.log(postData.message);
+                        this.errorMsg = postData.message;
+                        if (post.status == 401) {
+                            alert(this.errorMsg = postData.message);
+                        } else {
+                            this.post.unshift(await post.json());
+                            alert('Post sans image modifié avec succès');
+                        }
                     }
+                } else {
+                    console.log(this.errorMsg);
                 }
             } catch (error) {
                 console.log(error);
@@ -121,13 +144,12 @@ export default {
         },
         async likePost (post) {
             const headers = getAuthenticationHeaders();
-            const like = await fetch(`http://localhost:3001/api/post/${post.post_id}/like`, {
+            const like = await fetch(`http://localhost:3001/api/posts/${post.post_id}/like`, {
                     method: 'POST',
                     headers: headers,
                     body: ""
                 });
                 const likes = await like.json();
-
                 post.numberLikes = likes.likes;
         }
     }

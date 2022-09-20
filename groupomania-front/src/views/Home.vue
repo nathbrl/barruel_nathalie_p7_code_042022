@@ -31,7 +31,7 @@ export default {
       try {
          const headers = getAuthenticationHeaders();
          if (headers) {
-            const posts = await fetch("http://localhost:3001/api/post/", {
+            const posts = await fetch("http://localhost:3001/api/posts/", {
                method: 'GET',
                headers
             });
@@ -54,8 +54,6 @@ export default {
       post: PostComponent,
    },
    methods: {
-      async getPosts() {
-      },
       async createPost(){
          try {
             const headers = getAuthenticationHeaders();
@@ -67,21 +65,25 @@ export default {
                formData.append('document', postBody);
                if(postImage) {
                   formData.append('image', postImage);
-                  const newPost = await fetch("http://localhost:3001/api/post", 
+                  const newPost = await fetch("http://localhost:3001/api/posts", 
                   {  method: "POST",
                      headers,
                      body: formData
                   });
                   this.posts.unshift(await newPost.json());
                   alert('Nouveau post crée avec succès');
-
+                  this.post = {};
+                  this.postImage = {};
                } else {
-                  const newPost = await fetch("http://localhost:3001/api/post", 
+                  const newPost = await fetch("http://localhost:3001/api/posts", 
                   {  method: "POST",
                      headers,
                      body: formData.postBody
                   });
                   this.posts.unshift(await newPost.json());
+                  alert('Nouveau post crée avec succès');
+                  this.post = {};
+                  this.postImage = {};
                }
             }
          } catch (error) {
@@ -101,7 +103,6 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-
 
 body {
    background: #f7f7f7;
@@ -183,11 +184,6 @@ span {
    font-size: 18px;
 }
 
-#btn-comms {
-   background-color: #ffd7d7;
-   color:#4e5166;
-}
-
 .cursor {
    cursor: pointer
 }
@@ -225,7 +221,7 @@ span {
 }
 .like-counter{
    margin-left: 5px;
-   color: #fd2d01;
+   color: #ffd7d7;
    font-weight: 600;
 }
 </style>

@@ -20,7 +20,7 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
-app.use('/api/post', postRoute);//pluriel
+app.use('/api/posts', postRoute);//pluriel
 app.use('/api/user', userRoute);//pluriel
 
 module.exports = app;
