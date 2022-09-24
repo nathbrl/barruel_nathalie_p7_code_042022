@@ -55,8 +55,8 @@ CREATE TABLE public.post (
     post_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     content character varying(300) NOT NULL,
     image character varying(300),
-    created_at date NOT NULL,
-    updated_at date,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     user_id uuid NOT NULL
 );
 
@@ -74,8 +74,8 @@ CREATE TABLE public."user" (
     password character varying(300) NOT NULL,
     is_admin boolean NOT NULL,
     profile_picture character varying(300),
-    created_at date NOT NULL,
-    updated_at date
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone
 );
 
 
@@ -86,10 +86,16 @@ ALTER TABLE public."user" OWNER TO postgres;
 --
 
 COPY public."like" (like_id, post_id, user_id) FROM stdin;
-d0c37e8f-029f-49be-9413-0ff3b6db93d0    eb882192-2844-4fc2-94a2-7a0dd98db9d4    bab146fc-127c-11ed-9a72-00d8612e53a4
-1167f54e-7f5a-4a88-9f07-efe3bcb2b32e    dac5ed21-74ae-401b-8572-3782f7fcea73    bab146fc-127c-11ed-9a72-00d8612e53a4
 8d0790f5-bc25-4f54-9c53-5fb58981085f    f2762dae-2e09-4409-a7fb-496e2a70ceed    bab146fc-127c-11ed-9a72-00d8612e53a4
 41eed2e8-8af1-44a2-859c-97c159b2c3f3    b80a7691-a697-4c4e-b47d-a9276d695060    bab146fc-127c-11ed-9a72-00d8612e53a4
+a6e000a0-7467-48bb-ac74-53d6b7dc289b    51e05509-40a8-45fa-b028-3d15010ac92c    44c2229f-b69d-4d7c-89c2-2d25604f29b5
+e5732d3a-5a0e-4099-b723-4aa7a784f533    55aaaf0f-3206-4c6b-a3ec-1e057390dccd    44c2229f-b69d-4d7c-89c2-2d25604f29b5
+0c05094a-6d39-4cd5-8e38-1161088ac27c    b80a7691-a697-4c4e-b47d-a9276d695060    44c2229f-b69d-4d7c-89c2-2d25604f29b5
+6473ce43-20a1-4776-b589-bbaae7f33179    f2762dae-2e09-4409-a7fb-496e2a70ceed    44c2229f-b69d-4d7c-89c2-2d25604f29b5
+9a525a2c-eebb-4aa3-ba3f-578672c37e7b    55aaaf0f-3206-4c6b-a3ec-1e057390dccd    1276e401-9676-4ab6-92e2-57b35a2ce506
+a9b35466-b86a-43bb-a552-47c4405279e8    51e05509-40a8-45fa-b028-3d15010ac92c    1276e401-9676-4ab6-92e2-57b35a2ce506
+adec9544-1cf7-4145-b35c-c78abeb78e60    f2762dae-2e09-4409-a7fb-496e2a70ceed    1276e401-9676-4ab6-92e2-57b35a2ce506
+a193fa82-aab6-4fc1-b19b-9f3a87303350    b80a7691-a697-4c4e-b47d-a9276d695060    1276e401-9676-4ab6-92e2-57b35a2ce506
 \.
 
 
@@ -98,13 +104,14 @@ d0c37e8f-029f-49be-9413-0ff3b6db93d0    eb882192-2844-4fc2-94a2-7a0dd98db9d4    
 --
 
 COPY public.post (post_id, content, image, created_at, updated_at, user_id) FROM stdin;
-f2762dae-2e09-4409-a7fb-496e2a70ceed    J'ai Ã©tÃ© en NorvÃ¨ge pendant les vacances prÃ©cÃ©dentes regardez ce que j'y ai vu ! :o        http://localhost:3001/images/1662717497585.jpg  2022-09-09      \N      44c2229f-b69d-4d7c-89c2-2d25604f29b5
-b80a7691-a697-4c4e-b47d-a9276d695060    Je dessine depuis pas mal d'annÃ©es maintenant voici une de mes Å"uvres ! Soyez indulgents.     http://localhost:3001/images/1662717664758.jpg  2022-09-09      \N      1276e401-9676-4ab6-92e2-57b35a2ce506
-eb882192-2844-4fc2-94a2-7a0dd98db9d4    Moi quand je corrige un bug et qu'il y en a 30 autres qui apparaissent haha !  http://localhost:3001/images/1663001183157.png   2022-09-12      \N      1276e401-9676-4ab6-92e2-57b35a2ce506
-dac5ed21-74ae-401b-8572-3782f7fcea73    Besoin d'une pause cafÃ© !      http://localhost:3001/images/1663001402487.webp
-2022-09-12      \N      bab146fc-127c-11ed-9a72-00d8612e53a4
-55aaaf0f-3206-4c6b-a3ec-1e057390dccd    Mon mood pendant les vacances   http://localhost:3001/images/1663001648378.png 2022-09-12       \N      bab146fc-127c-11ed-9a72-00d8612e53a4
-51e05509-40a8-45fa-b028-3d15010ac92c    rien de mieux que des memes pour se changer les idÃ©es  http://localhost:3001/images/1663003653091.jpg  2022-09-12      \N      52fdd7cb-3116-4132-8e3f-a50d5e030fa7
+f2762dae-2e09-4409-a7fb-496e2a70ceed    J'ai Ã©tÃ© en NorvÃ¨ge pendant les vacances prÃ©cÃ©dentes regardez ce que j'y ai vu ! :o        http://localhost:3001/images/1662717497585.jpg  2022-09-09 00:00:00+02  \N      44c2229f-b69d-4d7c-89c2-2d25604f29b5
+b80a7691-a697-4c4e-b47d-a9276d695060    Je dessine depuis pas mal d'annÃ©es maintenant voici une de mes Å"uvres ! Soyez indulgents.     http://localhost:3001/images/1662717664758.jpg  2022-09-09 00:00:00+02  \N      1276e401-9676-4ab6-92e2-57b35a2ce506
+51e05509-40a8-45fa-b028-3d15010ac92c    rien de mieux que des memes pour se changer les idÃ©es  http://localhost:3001/images/1663003653091.jpg  2022-09-12 00:00:00+02  \N      52fdd7cb-3116-4132-8e3f-a50d5e030fa7
+793af99d-84c1-4777-bc5f-e69b3cf428bc    Besoin d'un petit cafÃ© ?       http://localhost:3001/images/1663434826268.webp
+2022-09-17 19:13:46.27+02       \N      1276e401-9676-4ab6-92e2-57b35a2ce506
+17ec40fe-7c4a-41c8-9918-7b966cf678a8    lol     http://localhost:3001/images/1663686727863.jpg  2022-09-20 17:12:07.871+02      \N      bab146fc-127c-11ed-9a72-00d8612e53a4
+71a6c225-b7ce-4da3-8e11-0508dfd8a5d1    coucou !        \N      2022-09-19 17:37:30.416+02      2022-09-20 14:46:23.764+02      44c2229f-b69d-4d7c-89c2-2d25604f29b5
+55aaaf0f-3206-4c6b-a3ec-1e057390dccd    Mon mood pendant les vacances   http://localhost:3001/images/1663678553307.png 2022-09-12 00:00:00+02   2022-09-20 14:55:53.398+02      bab146fc-127c-11ed-9a72-00d8612e53a4
 \.
 
 
@@ -113,10 +120,11 @@ dac5ed21-74ae-401b-8572-3782f7fcea73    Besoin d'une pause cafÃ© !      http:/
 --
 
 COPY public."user" (user_id, pseudo, email, password, is_admin, profile_picture, created_at, updated_at) FROM stdin;
-1276e401-9676-4ab6-92e2-57b35a2ce506    titi    titi@test.fr    $2b$10$1Kh6ICaDjGAyCp79DjMmXOBQE1HMZDEiSkqHl8WXFL9SfkIYd/Heq    f       \N      2022-06-12      \N
-bab146fc-127c-11ed-9a72-00d8612e53a4    bibi    bibi@test.fr    $2b$10$hwHYZ74zDrLn1RqH3L84t.CjaubyBrFFQlgzIwLQArJFs.Xu7PABW    f       \N      2022-08-02      \N
-44c2229f-b69d-4d7c-89c2-2d25604f29b5    tata    tata@test.fr    $2b$10$t6VuCEWwomYe0JLmu79WkOw8g06ln6HJg8.zIhiAgXs0D1JBXyLz6    f       \N      2022-06-06      \N
-52fdd7cb-3116-4132-8e3f-a50d5e030fa7    toto    toto@test.fr    $2b$10$biWJbBOH2DjcQsvHWCQ98.cna4Dp9Oi9az4ATvbZZlA6TB8/jl5wS    t       \N      2022-06-06      \N
+1276e401-9676-4ab6-92e2-57b35a2ce506    titi    titi@test.fr    $2b$10$1Kh6ICaDjGAyCp79DjMmXOBQE1HMZDEiSkqHl8WXFL9SfkIYd/Heq    f       \N      2022-06-12 00:00:00+02  \N
+bab146fc-127c-11ed-9a72-00d8612e53a4    bibi    bibi@test.fr    $2b$10$hwHYZ74zDrLn1RqH3L84t.CjaubyBrFFQlgzIwLQArJFs.Xu7PABW    f       \N      2022-08-02 00:00:00+02  \N
+44c2229f-b69d-4d7c-89c2-2d25604f29b5    tata    tata@test.fr    $2b$10$t6VuCEWwomYe0JLmu79WkOw8g06ln6HJg8.zIhiAgXs0D1JBXyLz6    f       \N      2022-06-06 00:00:00+02  \N
+52fdd7cb-3116-4132-8e3f-a50d5e030fa7    toto    toto@test.fr    $2b$10$biWJbBOH2DjcQsvHWCQ98.cna4Dp9Oi9az4ATvbZZlA6TB8/jl5wS    t       \N      2022-06-06 00:00:00+02  \N
+f739abae-3398-11ed-b1cb-00d8612e53a4    lola    lola@test.fr    $2b$10$KDHhnfSNWgoFrcN23tfn8e1TmNdnSLhDCySpxy7lXc9hQVFGYZ6pO    f       \N      2022-09-13 00:00:00+02  \N
 \.
 
 

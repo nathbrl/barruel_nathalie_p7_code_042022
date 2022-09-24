@@ -25,7 +25,7 @@ exports.likePost = async (req, res, next) => {
    const likesNumber = {
       likes: parseInt(totalLike.rows[0].count)
    }
-   res.send(likesNumber);
+   return res.send(likesNumber);
 }
 
 /* GET ALL POSTS */
@@ -36,58 +36,70 @@ exports.getAllPosts = async (req, res, next) => {
       const postLike = await pool.query(queries.totalLikeQuery, [post.post_id]);
       post.numberLikes = parseInt(postLike.rows[0].count);
    }
-   res.status(200).json(posts.rows);
+   return res.status(200).json(posts.rows);
 }
 /* CREATE ONE POST */
 exports.createPost = async (req, res, next) => {
-   console.log(req.body);
    //POST WITH MEDIA
    const postContent = JSON.parse(req.body.document);
    const postImage = req.file;
-   if (req.body.document == null) {
-      console.log('Le champ texte ne peut être vide');
-      res.status(400).json({ message: 'le champ texte ne peut être vide' });
-   } 
-   if (postImage == undefined) {
-      //POST WITHOUT MEDIA
-      const postNoImage = {
-         content: postContent.content,
-         image: null,
-         created_at: new Date(),
-         updated_at: null,
-         user_id: req.user.userId,
-      };
 
-      const publishPostNoMedia = await pool.query(queries.createPostQuery, [postNoImage.content, postNoImage.image, postNoImage.created_at, postNoImage.updated_at, postNoImage.user_id]);
-      if (publishPostNoMedia) {
-         res.status(201).json({ ...postNoImage, pseudo: req.user.pseudo, numberLikes: 0 });
-      } else {
-         res.status(400).json({ message: 'Post sans image non ajouté' });
-      }
+   if (postContent.content == null || postContent.content == undefined || postContent.content == '') {
+      return res.status(400).json({ message: 'le champ texte ne peut être vide' });
    } else {
-      const image = req.protocol + "://" + req.get("host") + "/images/" + req.file.filename;
-      const post = {
-         content: postContent.content,
-         image: image,
-         created_at: new Date(),
-         updated_at: null,
-         user_id: req.user.userId,
-      };
-
-      const publishPost = await pool.query(queries.createPostQuery, [
-         post.content,
-         post.image,
-         post.created_at,
-         post.updated_at,
-         post.user_id,
-      ]);
-      if (publishPost) {
-         res.status(201).json({ ...post, pseudo: req.user.pseudo, numberLikes: 0 });
+      if (postImage == undefined) {
+         //POST WITHOUT MEDIA
+         const postNoImage = {
+            content: postContent.content,
+            image: null,
+            created_at: new Date(),
+            updated_at: null,
+            user_id: req.user.userId,
+         };
+         const publishPostNoMedia = await pool.query(queries.createPostQuery, [postNoImage.content, postNoImage.image, postNoImage.created_at, postNoImage.updated_at, postNoImage.user_id]);
+         if (publishPostNoMedia) {
+            return res.status(201).json({ ...publishPostNoMedia.rows[0], pseudo: req.user.pseudo, numberLikes: 0 });
+         } else {
+            return res.status(400).json({ message: 'Post sans image non ajouté' });
+         }
       } else {
-         res.status(400).json({ message: `Nouvelle publication ajouté` });
+         const image = req.protocol + "://" + req.get("host") + "/images/" + req.file.filename;
+         const post = {
+            content: postContent.content,
+            image: image,
+            created_at: new Date(),
+            updated_at: null,
+            user_id: req.user.userId,
+         };
+         const publishPost = await pool.query(queries.createPostQuery, [
+            post.content,
+            post.image,
+            post.created_at,
+            post.updated_at,
+            post.user_id,
+         ]);
+         if (publishPost) {
+            return res.status(201).json({ ...publishPost.rows[0], pseudo: req.user.pseudo, numberLikes: 0 });
+         } else {
+            return res.status(400).json({ message: `Nouvelle publication ajouté` });
+         }
       }
    }
 };
+
+exports.checkUpdatePost = async (req, res, next) => {
+   const id = req.params.id;
+   const postId = await pool.query(queries.postIdQuery, [id]);
+   try {
+      if (req.user.userId == postId.rows[0].user_id || req.user.admin) {
+         return res.status(200).json({ message: 'Publication modifiable' });
+      } else {
+         return res.status(400).json({ message: 'Publication non modifiable' });
+      }
+   } catch (error) {
+      console.log(error);
+   }
+}
 
 exports.updatePost = async (req, res, next) => {
    const id = req.params.id;
@@ -124,7 +136,6 @@ exports.updatePost = async (req, res, next) => {
                   if (!updatePostWithMedia) {
                      return res.status(400).json({ message: 'Publication non modifié' });
                   } else {
-                     console.log('ok 2');
                      return res.status(200).json({ message: 'Publication modifié' });
                   }
                }
@@ -146,12 +157,12 @@ exports.deletePost = async (req, res, next) => {
       if (req.user.userId == rows.rows[0].user_id || req.user.admin) {
          const postDelete = await pool.query(queries.deletePostQuery, [id]);
          if (!postDelete) {
-            res.status(400).json({ message: 'Publication non supprimé vous n\'avez pas le droit' });
+            return res.status(400).json({ message: 'Publication non supprimé vous n\'avez pas le droit' });
          } else {
-            res.status(200).json({ message: 'Publication supprimé avec succès' });
+            return res.status(200).json({ message: 'Publication supprimé avec succès' });
          }
       } else {
-         res.status(401).json({ message: 'Vous ne pouvez supprimer cette publication' });
+         return res.status(401).json({ message: 'Vous ne pouvez supprimer cette publication' });
       }
    }
 

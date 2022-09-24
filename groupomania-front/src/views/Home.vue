@@ -7,8 +7,8 @@
                <form method="POST" action="/images" enctype="multipart/form-data">
                   <textarea class="form-control" rows="2" v-model="post.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                   <div class="mar-top">
-                     <input type="file" @change="selectFile" name="image" id="input-file">
-                     <a href="#" @click="createPost"><i class="fa fa-paper-plane"></i><span class="ml-1">Publier</span></a>
+                     <input type="file" @change="selectFile" name="image" id="input-file" ref="file">
+                     <a href="#" @click="createPost ($event)"><i class="fa fa-paper-plane"></i><span class="ml-1">Publier</span></a>
                   </div>
                </form>
             </div>
@@ -54,11 +54,20 @@ export default {
       post: PostComponent,
    },
    methods: {
-      async createPost(){
+      deletePost(postId){
+         this.posts = toRaw(this.posts).filter((post) => {
+         return post.post_id !== postId})
+      },
+      selectFile() {
+         this.image = event.target.files[0];
+      },
+      async createPost(e){
+         e.preventDefault();
          try {
             const headers = getAuthenticationHeaders();
             const postBody = JSON.stringify(this.post);
             const postImage = this.image;
+            const inputFile = this.$refs;
             
             if (headers) {
                const formData = new FormData();
@@ -70,33 +79,35 @@ export default {
                      headers,
                      body: formData
                   });
-                  this.posts.unshift(await newPost.json());
-                  alert('Nouveau post crée avec succès');
-                  this.post = {};
-                  this.postImage = {};
+                  const postData = await newPost.json();
+                  if (newPost.status == 400) {
+                     alert(postData.message);
+                  } else {
+                     this.posts.unshift(postData);
+                     alert('Nouveau post crée avec succès');
+                     this.post = {};
+                     inputFile.file.value = '';
+                  }
                } else {
                   const newPost = await fetch("http://localhost:3001/api/posts", 
                   {  method: "POST",
                      headers,
                      body: formData.postBody
                   });
-                  this.posts.unshift(await newPost.json());
-                  alert('Nouveau post crée avec succès');
-                  this.post = {};
-                  this.postImage = {};
+                  const postData = await newPost.json();
+                  if (newPost.status == 400) {
+                     alert(postData.message);
+                  } else {
+                     this.posts.unshift(postData);
+                     alert('Nouveau post crée avec succès');
+                     this.post = {};
+                  }
                }
             }
          } catch (error) {
             console.log(error);
          }
-      },
-      deletePost(postId){
-         this.posts = toRaw(this.posts).filter((post) => {
-         return post.post_id !== postId})
-      },
-      selectFile() {
-         this.image = event.target.files[0];
-      },
+      }
    }
 }
 </script>
@@ -118,13 +129,6 @@ body {
    border: solid 1px #ffd7d7;
 }
 
-.bg-light {
-   background: #fcfcfc;
-   padding: 20px;
-   border: 1px solid whitesmoke;
-   border-radius: 20px;
-   margin: 20px 0px;
-}
 .post-image{
    width: 630px;
    margin: 0 auto;

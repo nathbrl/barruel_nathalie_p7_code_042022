@@ -27,12 +27,12 @@
                             <a @click="deletePost(post.post_id)"><i class="fa fa-trash"></i><span class="ml-1">Supprimer</span></a>
                         </div>
                         <div class="like p-2 cursor">
-                            <a  @click="updatePost(post.post_id)" v-if="isUpdating == false "><i class="fa fa-pen"></i><span class="ml-1">Modification</span></a>
+                            <a  @click="updatePost(post.post_id, post)" v-if="isUpdating == false "><i class="fa fa-pen"></i><span class="ml-1">Modification</span></a>
                             <form v-else method="PUT" enctype="multipart/form-data">
                                 <textarea class="form-control" rows="2" v-model="newText.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                                 <div class="mar-top">
                                     <input type="file" @change="selectFile" name="image" id="input-file">
-                                    <button @click="postUpdated(post.post_id)"><i class="fa fa-paper-plane"></i><span class="ml-1">Modifier</span></button>
+                                    <button @click="postUpdated(post, $event)"><i class="fa fa-paper-plane"></i><span class="ml-1">Modifier</span></button>
                                 </div>
                             </form>
                         </div>
@@ -87,10 +87,29 @@ export default {
         selectFile() {
             this.newImage = event.target.files[0];
         },
-        async updatePost(post) {
-            this.isUpdating = !this.isUpdating;
+        async updatePost(postId) {
+            const headers = getAuthenticationHeaders();
+            debugger
+            try {
+	            if (postId) {
+	                const myPost = await fetch(`http://localhost:3001/api/posts/${postId}`, 
+                    { method: 'GET', headers});
+                    const data = await myPost.json();
+                    if (myPost.status == 401 || myPost.status == 400) {
+                        alert(this.errorMsg = data.message);
+                    } else {
+                        this.isUpdating = !this.isUpdating;
+                        alert(this.errorMsg = data.message);;
+                    }
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
         },
-        async postUpdated(postId){
+        async postUpdated(post, e){
+            e.preventDefault();
+            debugger
             try {
                 const headers = getAuthenticationHeaders();
                 const postBody = JSON.stringify(this.newText);
@@ -99,40 +118,35 @@ export default {
                     const formData = new FormData();
                     formData.append('document', postBody);
                     if(postImage) {
-                        console.log('if');
                         formData.append('image', postImage);
-                        const post = await fetch(`http://localhost:3001/api/posts/${postId}`, 
+                        const post = await fetch(`http://localhost:3001/api/posts/${this.post.post_id}`, 
                         {   method: 'PUT',
                             headers: headers,
                             body: formData,
                         });
                         const postData = await post.json();
-                        console.log(postData);
-                        console.log(postData.message);
+                        this.post.message = this.newText.content;
+                        this.updatePost();
                         this.errorMsg = postData.message;
                         if (post.status == 401) {
-                            console.log('if 2');
                             alert(this.errorMsg);
                         } else {
-                            console.log('else 2');
-                            this.post.unshift(await post.json());
-                            console.log('Post avec image modifié avec succès');
+                            alert(this.errorMsg);
                         }
                     } else {
-                        console.log('else');
-                        const post = await fetch(`http://localhost:3001/api/posts/${postId}`, {
+                        const post = await fetch(`http://localhost:3001/api/posts/${this.post.post_id}`, {
                             method: 'PUT',
                             headers: headers,
                             body: formData.postBody,
                         });
                         const postData = await post.json();
-                        console.log(postData.message);
+                        this.post.message = this.newText.content;
+                        this.updatePost();
                         this.errorMsg = postData.message;
                         if (post.status == 401) {
                             alert(this.errorMsg = postData.message);
                         } else {
-                            this.post.unshift(await post.json());
-                            alert('Post sans image modifié avec succès');
+                            alert('Post modifié avec succès');
                         }
                     }
                 } else {
