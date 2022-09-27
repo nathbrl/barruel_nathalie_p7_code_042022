@@ -5,10 +5,12 @@
             <div class="panel-body">
                <h2>Exprimez-vous !</h2>
                <form method="POST" action="/images" enctype="multipart/form-data">
-                  <textarea class="form-control" rows="2" v-model="post.content" placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
+                  <textarea class="form-control" rows="2" v-model="post.content"
+                     placeholder="Que souhaitez-vous partager aujourd'hui ?"></textarea>
                   <div class="mar-top">
                      <input type="file" @change="selectFile" name="image" id="input-file" ref="file">
-                     <a href="#" @click="createPost ($event)"><i class="fa fa-paper-plane"></i><span class="ml-1">Publier</span></a>
+                     <a href="#" @click="createPost ($event)"><i class="fa fa-paper-plane"></i><span
+                           class="ml-1">Publier</span></a>
                   </div>
                </form>
             </div>
@@ -23,11 +25,11 @@
 <script>
 import { getAuthenticationHeaders } from '../utils/utils'
 import PostComponent from '../components/post.vue'
-import {toRaw} from 'vue'
+import { toRaw } from 'vue'
 
 export default {
    async mounted() {
-      // POSTS
+      // DISPLAY ALL POSTS
       try {
          const headers = getAuthenticationHeaders();
          if (headers) {
@@ -36,8 +38,6 @@ export default {
                headers
             });
             this.posts = await posts.json();
-         } else {
-            alert("Vous n'avez pas accès à l'application, car vous n'êtes pas connecté");
          }
       } catch (error) {
          console.log(error);
@@ -53,32 +53,35 @@ export default {
    components: {
       post: PostComponent,
    },
+   emits: ['isLogged'],
    methods: {
-      deletePost(postId){
+      deletePost(postId) {
          this.posts = toRaw(this.posts).filter((post) => {
-         return post.post_id !== postId})
+            return post.post_id !== postId
+         })
       },
       selectFile() {
          this.image = event.target.files[0];
       },
-      async createPost(e){
+      async createPost(e) {
          e.preventDefault();
          try {
             const headers = getAuthenticationHeaders();
             const postBody = JSON.stringify(this.post);
             const postImage = this.image;
             const inputFile = this.$refs;
-            
+
             if (headers) {
                const formData = new FormData();
                formData.append('document', postBody);
-               if(postImage) {
+               if (postImage) {
                   formData.append('image', postImage);
-                  const newPost = await fetch("http://localhost:3001/api/posts", 
-                  {  method: "POST",
-                     headers,
-                     body: formData
-                  });
+                  const newPost = await fetch("http://localhost:3001/api/posts",
+                     {
+                        method: "POST",
+                        headers,
+                        body: formData
+                     });
                   const postData = await newPost.json();
                   if (newPost.status == 400) {
                      alert(postData.message);
@@ -89,11 +92,12 @@ export default {
                      inputFile.file.value = '';
                   }
                } else {
-                  const newPost = await fetch("http://localhost:3001/api/posts", 
-                  {  method: "POST",
-                     headers,
-                     body: formData.postBody
-                  });
+                  const newPost = await fetch("http://localhost:3001/api/posts",
+                     {
+                        method: "POST",
+                        headers,
+                        body: formData.postBody
+                     });
                   const postData = await newPost.json();
                   if (newPost.status == 400) {
                      alert(postData.message);
@@ -122,22 +126,19 @@ body {
 .container {
    background: white;
    padding: 15px;
-   max-width: 700px;
+   max-width: 800px;
    box-shadow: 4px 4px 8px #e1e1e1;
    margin: 20px 0px;
    border-radius: 20px;
    border: solid 1px #ffd7d7;
 }
 
-.post-image{
-   width: 630px;
-   margin: 0 auto;
-}
 .text-right {
    display: flex;
    justify-content: center;
    margin-top: 10px;
 }
+
 span {
    color: #4e5166;
 }
@@ -151,7 +152,7 @@ span {
    cursor: pointer;
 }
 
-.text-right button:hover, #btn-comms:hover{
+.text-right button:hover {
    background-color: #fd2d01;
    color: white;
 }
@@ -161,23 +162,13 @@ span {
    color: #fd2d01;
 }
 
-#comment-card{
-   display: flex;
-}
-
-#image-comment{
-   margin-right: 5em;
-   width: 50px;
-   height: 50px;
-}
-
-.fs-12{
+.fs-12 {
    display: flex;
    justify-content: space-evenly;
    margin-top: 20px;
 }
 
-.user-info{
+.user-info {
    display: flex;
    justify-content: space-between;
 }
@@ -192,18 +183,7 @@ span {
    cursor: pointer
 }
 
-.form-control-comment {
-   min-width: 300px;
-   margin: 0 30px;
-   width: 450px;
-   height: 80px;
-   border-color: #4e5166;
-   padding: 20px;
-   border-radius: 20px;
-   border: solid 1px lightgrey;
-}
-
-.form-control  {
+.form-control {
    min-width: 80%;
    width: 90%;
    height: 80px;
@@ -214,7 +194,7 @@ span {
    border: solid 1px lightgrey;
 }
 
-.mar-top{
+.mar-top {
    display: flex;
    justify-content: flex-start;
    padding: 10px 0px;
@@ -223,7 +203,8 @@ span {
 #input-file {
    color: #fd2d01;
 }
-.like-counter{
+
+.like-counter {
    margin-left: 5px;
    color: #ffd7d7;
    font-weight: 600;

@@ -1,4 +1,4 @@
-const schemaPassword = require("../models/Password");
+const schemaPassword = require("../models/password");
 
 module.exports = (req, res, next) => {
   if (!schemaPassword.validate(req.body.password)) {

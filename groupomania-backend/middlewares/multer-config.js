@@ -1,4 +1,4 @@
-const  multer = require('multer');
+const multer = require('multer');
 
 //liste des formats de fichiers autorisés
 const MIME_TYPES = {

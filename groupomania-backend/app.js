@@ -6,7 +6,7 @@ const path = require('path');
 const postRoute = require('./routes/post.routes');
 const userRoute = require('./routes/user.routes');
 
-app.use(helmet({crossOriginEmbedderPolicy: false}));
+app.use(helmet({ crossOriginEmbedderPolicy: false }));
 //Paramétrage des headers
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");

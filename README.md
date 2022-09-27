@@ -17,6 +17,8 @@ Vue.js: version v3.2.33
 
 ## Backend ##
 ### Installation ###
+La base de données est une BDD postgres sql.
+
 Cloner ce repository, utiliser la commande `npm i` ou `npm install` puis démarrer le serveur avec `node server` ou `nodemon server`.
 
 Le serveur doit fonctionner sur "localhost" avec le port par défaut "3001".

@@ -30,12 +30,12 @@ const router = createRouter({
             auth: true
          }
       }
- ]
+   ]
 })
 router.beforeEach((to, from, next) => {
    const main = to.matched[0];
-   if(main?.meta?.auth == true){
-      if(!localStorage.getItem('token')) {
+   if (main?.meta?.auth == true) {
+      if (!localStorage.getItem('token')) {
          return next({ name: 'signup' });
       }
    }

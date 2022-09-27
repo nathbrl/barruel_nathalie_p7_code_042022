@@ -1,10 +1,10 @@
 <template>
-   <div class="container"> 
-      <div class="row"> 
-         <div class="col-md-6"> 
-            <div class="card"> 
-               <form action="post" class="box"> 
-                  <h1>S'inscrire</h1> 
+   <div class="container">
+      <div class="row">
+         <div class="col-md-6">
+            <div class="card">
+               <form action="post" class="box">
+                  <h1>S'inscrire</h1>
                   <label for="pseudo" class="text">Choisissez un pseudo</label>
                   <input type="text" name="pseudo" placeholder=" pseudo" v-model="pseudo">
                   <label for="email" class="text">Votre adresse mail</label>
@@ -14,10 +14,10 @@
                   <div>
                      <button class="signup-button" @click="signup">Je m'inscris</button>
                      <span id="msg" v-if="errorMsg"> {{ errorMsg }}</span>
-                  </div> 
-               </form> 
-            </div> 
-         </div> 
+                  </div>
+               </form>
+            </div>
+         </div>
       </div>
    </div>
 </template>
@@ -37,22 +37,23 @@ export default {
       async signup(e) {
          e.preventDefault()
          try {
-            const response = await fetch('http://localhost:3001/api/user/signup', 
-            {  method: 'POST',
-               headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-               },
-               body: JSON.stringify({ pseudo: this.pseudo, password: this.password, email: this.email})
-            })
+            const response = await fetch('http://localhost:3001/api/user/signup',
+               {
+                  method: 'POST',
+                  headers: {
+                     'Accept': 'application/json',
+                     'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ pseudo: this.pseudo, password: this.password, email: this.email })
+               })
             const userData = await response.json();
 
             if (response.status == 400) {
                this.errorMsg = userData.message;
             } else {
-               this.$router.push({name: 'login'})
+               this.$router.push({ name: 'login' })
             }
-         } catch(error) {
+         } catch (error) {
             console.log(this.errorMsg = error);
          }
       }
@@ -63,31 +64,21 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
-@media (min-width: 1024px) {
-  .login {
-   min-height: 100vh;
-   width: 100px;
-   margin: auto;
-   display: flex;
-   align-items: center;
-  }
-}
 * {
    font-family: 'Lato', sans-serif;
 }
+
 body {
    margin: 0;
    padding: 0;
    background: #fff
 }
 
-.card{
-   margin-bottom:20px;
-   border:none;
+.card {
+   margin-bottom: 20px;
+   border: none;
 }
-.label-text{
-   color:#ffd7d7;
-}
+
 .box {
    padding: 10px;
    background: #4e5166;
@@ -105,12 +96,13 @@ body {
    text-align: center;
    border: 2px solid #ffd7d7;
    padding: 10px 10px;
-   width: 250px;
+   width: 200px;
    outline: none;
    color: white;
    border-radius: 24px;
    transition: 0.25s
 }
+
 .signup-button {
    border: 0;
    background: none;
@@ -125,6 +117,7 @@ body {
    border-radius: 24px;
    transition: 0.25s
 }
+
 .box h1 {
    color: #fff;
    font-weight: 500;
@@ -137,9 +130,11 @@ body {
    width: 300px;
    border-color: #ff7d7d
 }
-input::placeholder{
+
+input::placeholder {
    color: white;
 }
+
 .box input[type="submit"] {
    border: 0;
    background: none;
@@ -154,9 +149,11 @@ input::placeholder{
    transition: 0.25s;
    cursor: pointer
 }
-.text{
+
+.text {
    color: #fff;
 }
+
 span#msg {
    color: #fd2f01;
 }
