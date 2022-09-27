@@ -105,6 +105,7 @@ export default {
                      this.posts.unshift(postData);
                      alert('Nouveau post crée avec succès');
                      this.post = {};
+                     inputFile.file.value = '';
                   }
                }
             }

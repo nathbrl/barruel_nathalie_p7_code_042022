@@ -120,7 +120,6 @@ export default {
                                 body: formData,
                             });
                         const postData = await post.json();
-                        console.log(postData);
                         this.post.content = this.newText.content;
                         this.post.image = postData.image;
                         this.updatePost();

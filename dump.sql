@@ -91,10 +91,6 @@ INSERT INTO public."like" VALUES ('a6e000a0-7467-48bb-ac74-53d6b7dc289b', '51e05
 INSERT INTO public."like" VALUES ('e5732d3a-5a0e-4099-b723-4aa7a784f533', '55aaaf0f-3206-4c6b-a3ec-1e057390dccd', '44c2229f-b69d-4d7c-89c2-2d25604f29b5');
 INSERT INTO public."like" VALUES ('0c05094a-6d39-4cd5-8e38-1161088ac27c', 'b80a7691-a697-4c4e-b47d-a9276d695060', '44c2229f-b69d-4d7c-89c2-2d25604f29b5');
 INSERT INTO public."like" VALUES ('6473ce43-20a1-4776-b589-bbaae7f33179', 'f2762dae-2e09-4409-a7fb-496e2a70ceed', '44c2229f-b69d-4d7c-89c2-2d25604f29b5');
-INSERT INTO public."like" VALUES ('9a525a2c-eebb-4aa3-ba3f-578672c37e7b', '55aaaf0f-3206-4c6b-a3ec-1e057390dccd', '1276e401-9676-4ab6-92e2-57b35a2ce506');
-INSERT INTO public."like" VALUES ('a9b35466-b86a-43bb-a552-47c4405279e8', '51e05509-40a8-45fa-b028-3d15010ac92c', '1276e401-9676-4ab6-92e2-57b35a2ce506');
-INSERT INTO public."like" VALUES ('adec9544-1cf7-4145-b35c-c78abeb78e60', 'f2762dae-2e09-4409-a7fb-496e2a70ceed', '1276e401-9676-4ab6-92e2-57b35a2ce506');
-INSERT INTO public."like" VALUES ('a193fa82-aab6-4fc1-b19b-9f3a87303350', 'b80a7691-a697-4c4e-b47d-a9276d695060', '1276e401-9676-4ab6-92e2-57b35a2ce506');
 INSERT INTO public."like" VALUES ('f515ff41-1dda-46be-8354-511267d0a3d7', '17ec40fe-7c4a-41c8-9918-7b966cf678a8', 'f739abae-3398-11ed-b1cb-00d8612e53a4');
 INSERT INTO public."like" VALUES ('ae2fc97b-410e-481b-adfe-e51af4080ceb', '793af99d-84c1-4777-bc5f-e69b3cf428bc', 'f739abae-3398-11ed-b1cb-00d8612e53a4');
 INSERT INTO public."like" VALUES ('108c1ea6-c920-425d-b383-59bb76a872a8', '55aaaf0f-3206-4c6b-a3ec-1e057390dccd', 'f739abae-3398-11ed-b1cb-00d8612e53a4');
@@ -102,6 +98,13 @@ INSERT INTO public."like" VALUES ('46ad450e-59b2-45b2-bd76-0380669c726d', '51e05
 INSERT INTO public."like" VALUES ('273a3277-750d-42b1-beb2-3f8b5b025b5c', 'f2762dae-2e09-4409-a7fb-496e2a70ceed', 'f739abae-3398-11ed-b1cb-00d8612e53a4');
 INSERT INTO public."like" VALUES ('638f6d2e-6081-475b-9f4f-275f9d24a295', 'b80a7691-a697-4c4e-b47d-a9276d695060', 'f739abae-3398-11ed-b1cb-00d8612e53a4');
 INSERT INTO public."like" VALUES ('abd86487-3df6-49b7-8394-03c8a9bb157b', 'b3821105-6d21-4ad6-a0df-797ae0331d57', 'f739abae-3398-11ed-b1cb-00d8612e53a4');
+INSERT INTO public."like" VALUES ('ce906ac4-10f0-4545-83b1-403aa11550f2', 'b3821105-6d21-4ad6-a0df-797ae0331d57', '1276e401-9676-4ab6-92e2-57b35a2ce506');
+INSERT INTO public."like" VALUES ('52d13196-d165-4b7c-9f15-6ea3d6285911', '17ec40fe-7c4a-41c8-9918-7b966cf678a8', '1276e401-9676-4ab6-92e2-57b35a2ce506');
+INSERT INTO public."like" VALUES ('64ad2f06-56c6-4019-bb7a-55dfcffe0ce4', '793af99d-84c1-4777-bc5f-e69b3cf428bc', '1276e401-9676-4ab6-92e2-57b35a2ce506');
+INSERT INTO public."like" VALUES ('59ec6bea-b8da-4ce0-98fa-c1cc8a031b18', '55aaaf0f-3206-4c6b-a3ec-1e057390dccd', '1276e401-9676-4ab6-92e2-57b35a2ce506');
+INSERT INTO public."like" VALUES ('020854df-760c-4b2c-9075-8afad91db90a', '51e05509-40a8-45fa-b028-3d15010ac92c', '1276e401-9676-4ab6-92e2-57b35a2ce506');
+INSERT INTO public."like" VALUES ('780a30cd-14b0-4de0-bde1-5a004c8947f1', 'f2762dae-2e09-4409-a7fb-496e2a70ceed', '1276e401-9676-4ab6-92e2-57b35a2ce506');
+INSERT INTO public."like" VALUES ('9ed92b74-dca9-42bf-bfc4-ef1b2777fb71', 'b80a7691-a697-4c4e-b47d-a9276d695060', '1276e401-9676-4ab6-92e2-57b35a2ce506');
 
 
 --
@@ -112,11 +115,12 @@ INSERT INTO public.post VALUES ('f2762dae-2e09-4409-a7fb-496e2a70ceed', 'J''ai �
 INSERT INTO public.post VALUES ('b80a7691-a697-4c4e-b47d-a9276d695060', 'Je dessine depuis pas mal d''ann├®es maintenant voici une de mes ┼ôuvres ! Soyez indulgents.', 'http://localhost:3001/images/1662717664758.jpg', '2022-09-09 00:00:00+02', NULL, '1276e401-9676-4ab6-92e2-57b35a2ce506');
 INSERT INTO public.post VALUES ('51e05509-40a8-45fa-b028-3d15010ac92c', 'rien de mieux que des memes pour se changer les id├®es', 'http://localhost:3001/images/1663003653091.jpg', '2022-09-12 00:00:00+02', NULL, '52fdd7cb-3116-4132-8e3f-a50d5e030fa7');
 INSERT INTO public.post VALUES ('793af99d-84c1-4777-bc5f-e69b3cf428bc', 'Besoin d''un petit caf├® ?', 'http://localhost:3001/images/1663434826268.webp', '2022-09-17 19:13:46.27+02', NULL, '1276e401-9676-4ab6-92e2-57b35a2ce506');
+INSERT INTO public.post VALUES ('b3821105-6d21-4ad6-a0df-797ae0331d57', 'cc', NULL, '2022-09-23 16:47:51.617+02', '2022-09-26 14:06:52.083+02', '44c2229f-b69d-4d7c-89c2-2d25604f29b5');
+INSERT INTO public.post VALUES ('a685337b-f1bb-4482-ae21-5fd25ed7a5d0', 'coucou', 'http://localhost:3001/images/1664283880702.png', '2022-09-27 14:59:01.923+02', '2022-09-27 15:04:40.798+02', '44c2229f-b69d-4d7c-89c2-2d25604f29b5');
 INSERT INTO public.post VALUES ('17ec40fe-7c4a-41c8-9918-7b966cf678a8', 'lol', 'http://localhost:3001/images/1663686727863.jpg', '2022-09-20 17:12:07.871+02', NULL, 'bab146fc-127c-11ed-9a72-00d8612e53a4');
 INSERT INTO public.post VALUES ('71a6c225-b7ce-4da3-8e11-0508dfd8a5d1', 'coucou !', NULL, '2022-09-19 17:37:30.416+02', '2022-09-20 14:46:23.764+02', '44c2229f-b69d-4d7c-89c2-2d25604f29b5');
 INSERT INTO public.post VALUES ('55aaaf0f-3206-4c6b-a3ec-1e057390dccd', 'Mon mood pendant les vacances', 'http://localhost:3001/images/1663678553307.png', '2022-09-12 00:00:00+02', '2022-09-20 14:55:53.398+02', 'bab146fc-127c-11ed-9a72-00d8612e53a4');
 INSERT INTO public.post VALUES ('4e3f94ba-6ef4-4837-9b55-63a296dd5340', 'hey', NULL, '2022-09-26 13:23:14.817+02', '2022-09-26 13:28:03.905+02', 'f739abae-3398-11ed-b1cb-00d8612e53a4');
-INSERT INTO public.post VALUES ('b3821105-6d21-4ad6-a0df-797ae0331d57', 'lol', NULL, '2022-09-23 16:47:51.617+02', '2022-09-26 13:32:52.565+02', '44c2229f-b69d-4d7c-89c2-2d25604f29b5');
 INSERT INTO public.post VALUES ('dba47029-00c9-47d6-9037-fb1d27b10bbe', 'lol', NULL, '2022-09-22 17:09:01.265+02', '2022-09-24 17:43:19.714+02', '1276e401-9676-4ab6-92e2-57b35a2ce506');
 
 
@@ -129,8 +133,7 @@ INSERT INTO public."user" VALUES ('bab146fc-127c-11ed-9a72-00d8612e53a4', 'bibi'
 INSERT INTO public."user" VALUES ('44c2229f-b69d-4d7c-89c2-2d25604f29b5', 'tata', 'tata@test.fr', '$2b$10$t6VuCEWwomYe0JLmu79WkOw8g06ln6HJg8.zIhiAgXs0D1JBXyLz6', false, NULL, '2022-06-06 00:00:00+02', NULL);
 INSERT INTO public."user" VALUES ('52fdd7cb-3116-4132-8e3f-a50d5e030fa7', 'toto', 'toto@test.fr', '$2b$10$biWJbBOH2DjcQsvHWCQ98.cna4Dp9Oi9az4ATvbZZlA6TB8/jl5wS', true, NULL, '2022-06-06 00:00:00+02', NULL);
 INSERT INTO public."user" VALUES ('f739abae-3398-11ed-b1cb-00d8612e53a4', 'lola', 'lola@test.fr', '$2b$10$KDHhnfSNWgoFrcN23tfn8e1TmNdnSLhDCySpxy7lXc9hQVFGYZ6pO', false, NULL, '2022-09-13 00:00:00+02', NULL);
-INSERT INTO public."user" VALUES ('d1f42b9e-3d8e-11ed-b508-00d8612e53a4', 'lolo', 'lolo@test.fr', '$2b$10$tv480ypzvxAaGMeSqaAMg.9owRFkl4nkVIH6sq9i597cu58SKD/SO', false, NULL, '2022-09-26 13:31:53.432+02', NULL);
-INSERT INTO public."user" VALUES ('e65e152c-3d8e-11ed-8a60-00d8612e53a4', 'loli', 'loli@test.fr', '$2b$10$JT74XRf/donqVhaaDhRmwuVxEWSlUVVYGlh9uJXezuJ9Q.ynUy0/e', false, NULL, '2022-09-26 13:32:27.724+02', NULL);
+INSERT INTO public."user" VALUES ('4f47ceee-3e6a-11ed-a5d3-00d8612e53a4', 'tita', 'tita@test.fr', '$2b$10$OonNuJMDJa0YX/mgvjlkq.RcTbo9F9Lbhp2UckI1YqeOCV8plZa6S', false, NULL, '2022-09-27 15:43:03.585+02', NULL);
 
 
 --

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
     try {
-        if (req.headers.authorization === undefined) {
+        if (req.headers.authorization == undefined ) {
             throw 'Les headers d\'autorisation sont absents';
         }
         const token = req.headers.authorization.split(' ')[1];
@@ -15,6 +15,6 @@ module.exports = (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(401).json({ error: 'Invalid request' });
+        res.status(500).json({ error });
     }
 }
