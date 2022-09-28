@@ -18,7 +18,7 @@
          </a>
       </div>
    </div>
-   <RouterView @isLogged="isLogged == true" />
+   <RouterView @isLogged="isLogged = true" />
 </template>
 
 <script>

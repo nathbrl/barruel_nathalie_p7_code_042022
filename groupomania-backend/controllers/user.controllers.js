@@ -68,7 +68,7 @@ exports.login = async (req, res) => {
         bcrypt.compare(req.body.password, user.password)
             .then(valid => {
                 if (!valid) {
-                    return res.status(404).json({ message: 'Cet email ou ce mot de passe contient une erreur' });
+                    return res.status(401).json({ message: 'Cet email ou ce mot de passe contient une erreur' });
                 }
                 res.status(200).json({
                     pseudo: user.pseudo,

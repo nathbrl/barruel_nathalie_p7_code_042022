@@ -52,6 +52,7 @@ export default {
                this.errorMsg = userData.message;
             } else {
                const tokenStored = localStorage.setItem('token', userToken);
+               this.$emit('isLogged');
                this.$router.push({ name: 'home' })
             }
          } catch (error) {

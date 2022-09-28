@@ -44,7 +44,7 @@ export default {
                      'Accept': 'application/json',
                      'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify({ pseudo: this.pseudo, password: this.password, email: this.email })
+                  body: JSON.stringify({ pseudo: this.pseudo.trim(), password: this.password, email: this.email })
                })
             const userData = await response.json();
 
